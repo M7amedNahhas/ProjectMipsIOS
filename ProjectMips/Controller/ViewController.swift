@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ViewController: UIViewController,UIPickerViewDataSource,UIPickerViewDelegate,UITableViewDelegate,UITableViewDataSource {
+class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource {
     
      var typeArray = [String]()
     
@@ -18,37 +18,64 @@ class ViewController: UIViewController,UIPickerViewDataSource,UIPickerViewDelega
     
     
     
-    
+    // TableView
     func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 2
+        return typeArray.count
     }
     
+    
+    
+    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        if ((typeArray[indexPath.row] as? String) != nil) {
-            let cell = tableView.dequeueReusableCell(withIdentifier: "R-TypeCells") as! R_TypeTableViewCell
-            
-            cell.RTypeOpCodeTextField.text = typeArray[indexPath.row]
-            cell.RTypeRdTextField.text = typeArray[indexPath.row]
-            cell.RTypeRsTextField.text = typeArray[indexPath.row]
-            cell.RTypeRtTextField.text = typeArray[indexPath.row]
-            
-            
-            return cell
+
+        let result: UITableViewCell
+        
+        if (TypesSegmented.selectedSegmentIndex == 0) {
+            let cellOne = tableView.dequeueReusableCell(withIdentifier: "R-TypeCells") as! R_TypeTableViewCell
+            cellOne.RTypeOpCodeTextField.text = typeArray[indexPath.row]
+            cellOne.RTypeRdTextField.text = typeArray[indexPath.row]
+            cellOne.RTypeRsTextField.text = typeArray[indexPath.row]
+            cellOne.RTypeRtTextField.text = typeArray[indexPath.row]
+            //Configure here
+            result = cellOne
+        } else {
+            let cellTwo = tableView.dequeueReusableCell(withIdentifier: "I-TypeCells") as! I_TypeTableViewCell
+            cellTwo.ITypeOpCodeTextField.text = typeArray[indexPath.row]
+            cellTwo.ITypeRsTextField.text = typeArray[indexPath.row]
+            cellTwo.ITypeRtTextField.text = typeArray[indexPath.row]
+            //Configure here
+            result = cellTwo
         }
         
-        if ((typeArray[indexPath.row] as? String) != nil) {
-            
-            let cell2 = tableView.dequeueReusableCell(withIdentifier: "I-TypeCells") as! I_TypeTableViewCell
-            cell2.ITypeRsTextField.text = typeArray[indexPath.row]
-           
-            
-            return cell2
-        }
+        return result
         
-        return UITableViewCell()
+        
+//
+//        if ((typeArray[indexPath.row] as? String) != nil) {
+//            let cell = tableView.dequeueReusableCell(withIdentifier: "R-TypeCells") as! R_TypeTableViewCell
+//
+//            cell.RTypeOpCodeTextField.text = typeArray[indexPath.row]
+//            cell.RTypeRdTextField.text = typeArray[indexPath.row]
+//            cell.RTypeRsTextField.text = typeArray[indexPath.row]
+//            cell.RTypeRtTextField.text = typeArray[indexPath.row]
+//
+//
+//            return cell
+//        }
+//
+//        if ((typeArray[indexPath.row] as? String) != nil) {
+//
+//            let cell2 = tableView.dequeueReusableCell(withIdentifier: "I-TypeCells") as! I_TypeTableViewCell
+//            cell2.ITypeRsTextField.text = typeArray[indexPath.row]
+//
+//
+//            return cell2
+//        }
+        
+        
     }
 
     
@@ -59,37 +86,19 @@ class ViewController: UIViewController,UIPickerViewDataSource,UIPickerViewDelega
    
     @IBAction func addNewTypeBt(_ sender: UIButton) {
        
+        //typeArray.append()
+        
        TableView.reloadData()
         
     }
     
+    //Segment Type
+    @IBOutlet weak var TypesSegmented: UISegmentedControl!
+    
+    
+    
     //picker methods
-    @IBOutlet weak var TypesPicker: UIPickerView!
-    let pickerData = [["R-Type","I-Type"]]
-    var SelectedType : String = ""
     
-    func numberOfComponents(in pickerView: UIPickerView) -> Int {
-        return pickerData.count
-    }
-    
-    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
-        return pickerData[component].count
-    }
-    
-    
-    
-    //implement picker delegate
-    func pickerView(_
-        pickerView: UIPickerView,
-                    titleForRow row: Int,
-                    forComponent component: Int
-        ) -> String? {
-        return pickerData[component][row]
-    }
-    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-        SelectedType = pickerData[row]
-        TableView.reloadData()
-    }
    
     
     
@@ -100,8 +109,6 @@ class ViewController: UIViewController,UIPickerViewDataSource,UIPickerViewDelega
         super.viewDidLoad()
         
         TableView.delegate = self
-        TypesPicker.delegate = self
-        TypesPicker.dataSource = self
         TableView.reloadData()
     }
 
