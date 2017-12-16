@@ -9,23 +9,23 @@
 import Foundation
 
 class R_Type{
-    private var _OpCode : String
+    private var _Intruction : String
     private var _Rd : String
     private var _Rs: String
     private var _Rt : String
     
     
-    init(OpCode : String, Rd : String, Rs : String,Rt : String ){
-        self._OpCode = OpCode
+    init(inst : String, Rd : String, Rs : String,Rt : String ){
+        self._Intruction = inst
         self._Rd = Rd
         self._Rs = Rs
         self._Rt = Rt
         
     }
     
-    var OpCode : String {
+    var Intruction : String {
         
-        return _OpCode
+        return _Intruction
     }
     
     var Rd : String {
