@@ -10,11 +10,40 @@ import UIKit
 
 class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource {
     
-     var typeArray = [String]()
+     var typeArray = [Instruction]()
     
+    // R-Type
     
+    @IBOutlet weak var instRtypeNew: UITextField!
     
+    @IBOutlet weak var rsRtypeNew: UITextField!
     
+    @IBOutlet weak var rtRtypeNew: UITextField!
+    
+    @IBOutlet weak var rdRtypeNew: UITextField!
+    
+    // I-Type
+    
+    @IBOutlet weak var instItypeNew: UITextField!
+    
+    @IBOutlet weak var rtItypeNew: UITextField!
+    
+    @IBOutlet weak var rsItypeNew: UITextField!
+    
+    @IBOutlet weak var offsetItypeNew: UITextField!
+    
+    // Add New Method
+    @IBAction func AddNewRType(_ sender: UIButton) {
+        
+        typeArray.append(Instruction(inst:instRtypeNew.text! , Rd: rdRtypeNew.text!, Rs: rsRtypeNew.text!, Rt: rtRtypeNew.text!, Type: "R", Offset: "no"))
+        TableView.reloadData()
+    }
+    
+    @IBAction func AddNewIType(_ sender: UIButton) {
+        
+        typeArray.append(Instruction(inst:instItypeNew.text! , Rd: "no", Rs: rsItypeNew.text!, Rt: rtItypeNew.text!, Type: "I", Offset:offsetItypeNew.text! ))
+        TableView.reloadData()
+    }
     
     
     
@@ -33,48 +62,21 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
 
         let result: UITableViewCell
         
-        if (TypesSegmented.selectedSegmentIndex == 0) {
+        if (typeArray[indexPath.row].InstType == "R") {
             let cellOne = tableView.dequeueReusableCell(withIdentifier: "R-TypeCells") as! R_TypeTableViewCell
-            cellOne.RTypeOpCodeTextField.text = typeArray[indexPath.row]
-            cellOne.RTypeRdTextField.text = typeArray[indexPath.row]
-            cellOne.RTypeRsTextField.text = typeArray[indexPath.row]
-            cellOne.RTypeRtTextField.text = typeArray[indexPath.row]
-            //Configure here
+
+            
+            
             result = cellOne
         } else {
             let cellTwo = tableView.dequeueReusableCell(withIdentifier: "I-TypeCells") as! I_TypeTableViewCell
-            cellTwo.ITypeOpCodeTextField.text = typeArray[indexPath.row]
-            cellTwo.ITypeRsTextField.text = typeArray[indexPath.row]
-            cellTwo.ITypeRtTextField.text = typeArray[indexPath.row]
-            //Configure here
+
+            
+            
             result = cellTwo
         }
         
         return result
-        
-        
-//
-//        if ((typeArray[indexPath.row] as? String) != nil) {
-//            let cell = tableView.dequeueReusableCell(withIdentifier: "R-TypeCells") as! R_TypeTableViewCell
-//
-//            cell.RTypeOpCodeTextField.text = typeArray[indexPath.row]
-//            cell.RTypeRdTextField.text = typeArray[indexPath.row]
-//            cell.RTypeRsTextField.text = typeArray[indexPath.row]
-//            cell.RTypeRtTextField.text = typeArray[indexPath.row]
-//
-//
-//            return cell
-//        }
-//
-//        if ((typeArray[indexPath.row] as? String) != nil) {
-//
-//            let cell2 = tableView.dequeueReusableCell(withIdentifier: "I-TypeCells") as! I_TypeTableViewCell
-//            cell2.ITypeRsTextField.text = typeArray[indexPath.row]
-//
-//
-//            return cell2
-//        }
-        
         
     }
 
@@ -92,18 +94,9 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         
     }
     
-    //Segment Type
-    @IBOutlet weak var TypesSegmented: UISegmentedControl!
-    
     
     
     //picker methods
-    
-   
-    
-    
-    
-
     
     override func viewDidLoad() {
         super.viewDidLoad()
