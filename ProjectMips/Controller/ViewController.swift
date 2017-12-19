@@ -65,6 +65,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         if (typeArray[indexPath.row].InstType == "R") {
             let cellOne = tableView.dequeueReusableCell(withIdentifier: "R-TypeCells") as! R_TypeTableViewCell
 
+            cellOne.RTypeOpCodeTextField.text = typeArray[indexPath.row].Intruction 
             
             
             result = cellOne
