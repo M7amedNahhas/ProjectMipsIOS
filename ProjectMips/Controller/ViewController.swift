@@ -32,6 +32,12 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     
     @IBOutlet weak var offsetItypeNew: UITextField!
     
+    //
+    
+    var InstructionFromFetch:String?
+    var InstructionTypeFromFetch:String?
+    var ClockCycle:Int = 0
+    
     // Add New Method
     @IBAction func AddNewRType(_ sender: UIButton) {
         
@@ -45,6 +51,20 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         TableView.reloadData()
     }
     
+    func Fetch(InstructionFromTextField:String){
+        
+        var InstructionMemory = ["add":"add","sub":"sub"
+            ,"and":"and","or":"or","slt":"slt","nor":"nor","sw":"sw","lw":"lw","srl":"srl","addi":"addi"]
+       InstructionFromFetch = InstructionMemory[InstructionFromTextField]
+        if InstructionFromFetch == "sw" || InstructionFromFetch == "lw" || InstructionFromFetch == "addi" {
+            InstructionTypeFromFetch = "I"
+        } else {
+            InstructionTypeFromFetch = "R"
+        }
+        
+        ClockCycle = ClockCycle + 1
+    
+    }
     
     
     // TableView
@@ -65,8 +85,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         if (typeArray[indexPath.row].InstType == "R") {
             let cellOne = tableView.dequeueReusableCell(withIdentifier: "R-TypeCells") as! R_TypeTableViewCell
 
-            cellOne.RTypeOpCodeTextField.text = typeArray[indexPath.row].Intruction 
-            
+            cellOne.RTypeOpCodeTextField.text = typeArray[indexPath.row].Intruction
+        
             
             result = cellOne
         } else {
@@ -87,13 +107,6 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     @IBOutlet weak var TableView: UITableView!
     
    
-    @IBAction func addNewTypeBt(_ sender: UIButton) {
-       
-        //typeArray.append()
-        
-       TableView.reloadData()
-        
-    }
     
     
     
