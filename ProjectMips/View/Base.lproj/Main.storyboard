@@ -22,12 +22,15 @@
                                 <rect key="frame" x="0.0" y="673" width="208" height="63"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" red="0.29854728429999999" green="1" blue="0.99191771689999997" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
-                                <state key="normal" title="execute"/>
+                                <state key="normal" title="Clear"/>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="TRg-pI-p1a">
                                 <rect key="frame" x="206" y="673" width="208" height="63"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" title="Clear"/>
+                                <state key="normal" title="Execute"/>
+                                <connections>
+                                    <action selector="ExcuteButtonDo:" destination="XI0-Pb-lPq" eventType="touchUpInside" id="hBR-Ky-AVh"/>
+                                </connections>
                             </button>
                             <textField opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Lys-l0-gtA">
                                 <rect key="frame" x="86" y="146" width="60" height="30"/>
@@ -62,21 +65,21 @@
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <textField opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="rd" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="4bf-ik-tBV">
+                                                <textField opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="rs" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="4bf-ik-tBV">
                                                     <rect key="frame" x="83" y="6" width="60" height="30"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <nil key="textColor"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                     <textInputTraits key="textInputTraits"/>
                                                 </textField>
-                                                <textField opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="rs" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="YpF-aA-2gL">
+                                                <textField opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="rt" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="YpF-aA-2gL">
                                                     <rect key="frame" x="155" y="6" width="60" height="30"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <nil key="textColor"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                     <textInputTraits key="textInputTraits"/>
                                                 </textField>
-                                                <textField opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="rt" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="UJV-Q7-oDz">
+                                                <textField opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="rd" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="UJV-Q7-oDz">
                                                     <rect key="frame" x="227" y="6" width="60" height="30"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <nil key="textColor"/>
@@ -94,9 +97,9 @@
                                         </tableViewCellContentView>
                                         <connections>
                                             <outlet property="RTypeOpCodeTextField" destination="gXg-QD-3tI" id="hwK-cS-9Ik"/>
-                                            <outlet property="RTypeRdTextField" destination="4bf-ik-tBV" id="hDc-3E-pnK"/>
-                                            <outlet property="RTypeRsTextField" destination="YpF-aA-2gL" id="5ge-9a-6xu"/>
-                                            <outlet property="RTypeRtTextField" destination="UJV-Q7-oDz" id="kCK-u4-PvQ"/>
+                                            <outlet property="RTypeRdTextField" destination="UJV-Q7-oDz" id="h5f-Cf-ltJ"/>
+                                            <outlet property="RTypeRsTextField" destination="4bf-ik-tBV" id="PWl-Sp-xHu"/>
+                                            <outlet property="RTypeRtTextField" destination="YpF-aA-2gL" id="C85-IZ-Bkv"/>
                                         </connections>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="I-TypeCells" id="tbc-Rn-JKm" customClass="I_TypeTableViewCell" customModule="ProjectMips" customModuleProvider="target">
@@ -153,8 +156,7 @@
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <state key="normal" title="Add R-Type"/>
                                 <connections>
-                                    <action selector="AddNewRType:" destination="XI0-Pb-lPq" eventType="touchUpInside" id="Sp2-Sw-XJh"/>
-                                    <action selector="addNewTypeBt:" destination="XI0-Pb-lPq" eventType="touchUpInside" id="SXv-Qe-xLO"/>
+                                    <action selector="AddNewRType:" destination="XI0-Pb-lPq" eventType="touchUpInside" id="8x1-P0-GJQ"/>
                                 </connections>
                             </button>
                             <textField opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="inst" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Knw-dy-zOX">
