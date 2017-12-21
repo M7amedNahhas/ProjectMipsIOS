@@ -32,30 +32,35 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     
     @IBOutlet weak var offsetItypeNew: UITextField!
     
-    //
-    
     var InstructionFromFetch:String?
+    
     var InstructionTypeFromFetch:String?
+    
     var ClockCycle:Int = 0
     
     var rd:Register?
+    
     var rs:Register?
+    
     var rt:Register?
+    
+    var offset:Int?
+    
+    var memoryAddres:Int?
     
     var RegisterFileIndex:Int?
     
     var typeArray = [Instruction]()
     
-   
-    
     var RegisterFile = [Register]()
     
+    var MemoryList = [Int]()
     
     
     // Add New Method
     @IBAction func AddNewRType(_ sender: UIButton) {
         
-        typeArray.append(Instruction(inst:instRtypeNew.text! , Rd: rdRtypeNew.text!, Rs: rsRtypeNew.text!, Rt: rtRtypeNew.text!, Type: "R", Offset: "no"))
+        typeArray.append(Instruction(inst:instRtypeNew.text! , Rd: rdRtypeNew.text!, Rs: rsRtypeNew.text!, Rt: rtRtypeNew.text!, Type: "R", Offset: "0"))
          TableView.reloadData()
         
     }
@@ -125,6 +130,16 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         }
     }
     
+    func MemoryInit(){
+        let memorySize:Int = 100
+        var memoryLoopVar:Int = 0
+        
+        while memoryLoopVar < memorySize {
+            MemoryList.append(0)
+            memoryLoopVar = memoryLoopVar + 1
+        }
+    }
+    
     func RegisterFileIndexFinder(NameOfTheRegister:String) {
         
         var RegisterFile = ["zero":0 , "at":1 , "v0":2, "v1":3, "a0":4, "a1":5, "a2":6, "a3":7, "t0":8, "t1":9, "t2":10, "t3":11, "t4":12, "t5":13, "t6":14, "t7":15, "s0":16, "s1":17, "s2":18, "s3":19, "s4":20, "s5":21, "s6":22, "s7":23, "t8":24, "t9":25, "k0":26, "k1":27, "gp":28, "sp":29, "fp":30, "ra":31]
@@ -147,16 +162,25 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     
     }
     
-    func Decode(rsFromTextField:String , rdFromTextField:String , rtFromTextField:String){
+    func Decode(rsFromTextField:String , rdFromTextField:String , rtFromTextField:String , offsetFromTextField:Int){
         
         RegisterFileIndexFinder(NameOfTheRegister: rsFromTextField)
         rs = RegisterFile[RegisterFileIndex!]
         
-        RegisterFileIndexFinder(NameOfTheRegister: rdFromTextField)
-        rd = RegisterFile[RegisterFileIndex!]
+        if InstructionTypeFromFetch == "R" {
+            
+            RegisterFileIndexFinder(NameOfTheRegister: rdFromTextField)
+            rd = RegisterFile[RegisterFileIndex!]
+        }
         
         RegisterFileIndexFinder(NameOfTheRegister: rtFromTextField)
         rt = RegisterFile[RegisterFileIndex!]
+        
+        if InstructionTypeFromFetch == "I" {
+    
+            offset = offsetFromTextField
+            
+        }
         
         ClockCycle = ClockCycle + 1
         
@@ -169,12 +193,42 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             rd?.setValue(newValue: ExecutionList[InstructionFromFetch!]!)
         } else {
             
+            memoryAddres = (rs?.Value)! + (offset)!
         }
         
-       print(rd?.Value)
        ClockCycle = ClockCycle + 1
     }
     
+    func Memory() {
+        
+        if InstructionFromFetch == "sw" {
+            MemoryList.insert((rt?.Value)!, at: memoryAddres!)
+        }
+        
+        if InstructionFromFetch == "lw" {
+            rt?.setValue(newValue: MemoryList[memoryAddres!])
+            print("rt in memory \(rt?.Value)")
+        }
+        
+        ClockCycle = ClockCycle + 1
+    }
+    
+    func WrightBack() {
+        
+        if InstructionTypeFromFetch == "R" {
+            RegisterFile[RegisterFileIndex!].setValue(newValue: (rd?.Value)!)
+        }
+        if InstructionFromFetch == "lw" {
+            RegisterFile[(rt?.ID)!].setValue(newValue: (rt?.Value)!)
+        }
+        print("After Right Back!")
+        var z:Int = 0
+        while z <= 31 {
+            print("\(RegisterFile[z].Name) \(RegisterFile[z].Value)")
+            z = z+1
+        }
+        ClockCycle = ClockCycle + 1
+    }
     
     
     // TableView
@@ -183,6 +237,17 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     }
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return typeArray.count
+    }
+    
+    func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
+        return true
+    }
+    
+    func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
+        let selecedtItem = typeArray[sourceIndexPath.row]
+        typeArray.remove(at: sourceIndexPath.row)
+        typeArray.insert(selecedtItem, at: destinationIndexPath.row)
+        TableView.reloadData()
     }
     
     
@@ -199,11 +264,19 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             cellOne.RTypeRtTextField.text = typeArray[indexPath.row].Rt
             cellOne.RTypeRsTextField.text = typeArray[indexPath.row].Rs
             cellOne.RTypeRdTextField.text = typeArray[indexPath.row].Rd
+            cellOne.IndexOfInstruction.text = "\(indexPath.row)"
         
             
             result = cellOne
         } else {
             let cellTwo = tableView.dequeueReusableCell(withIdentifier: "I-TypeCells") as! I_TypeTableViewCell
+            
+            cellTwo.ITypeOpCodeTextField.text = typeArray[indexPath.row].Intruction
+            cellTwo.ITypeRsTextField.text = typeArray[indexPath.row].Rs
+            cellTwo.ITypeRtTextField.text = typeArray[indexPath.row].Rt
+            cellTwo.ITypeOffsetTextField.text = typeArray[indexPath.row].Offset
+            cellTwo.InstructionIndexTextField.text = "\(indexPath.row)"
+            
 
             result = cellTwo
         }
@@ -221,8 +294,10 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         
         TableView.delegate = self
         TableView.reloadData()
+        TableView.isEditing = true
         
         RegisterFileInit()
+        MemoryInit()
     }
 
     override func didReceiveMemoryWarning() {
@@ -234,8 +309,10 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         var j:Int = 0
         while j < typeArray.count {
             Fetch(InstructionFromTextField: typeArray[j].Intruction)
-            Decode(rsFromTextField: typeArray[j].Rs, rdFromTextField: typeArray[j].Rd, rtFromTextField: typeArray[j].Rt)
+            Decode(rsFromTextField: typeArray[j].Rs, rdFromTextField: typeArray[j].Rd, rtFromTextField: typeArray[j].Rt, offsetFromTextField: Int(typeArray[j].Offset)!)
             Execution()
+            Memory()
+            WrightBack()
             
             j = j + 1
         }

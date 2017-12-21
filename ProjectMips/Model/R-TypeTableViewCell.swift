@@ -19,6 +19,7 @@ class R_TypeTableViewCell: UITableViewCell {
     
     @IBOutlet weak var RTypeRtTextField: UITextField!
     
+    @IBOutlet weak var IndexOfInstruction: UILabel!
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code

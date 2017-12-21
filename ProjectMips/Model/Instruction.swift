@@ -17,6 +17,7 @@ class Instruction{
     private var _Offset:String
     
     
+    
     init(inst : String, Rd : String, Rs : String,Rt : String ,Type:String, Offset:String){
         self._Intruction = inst
         self._Rd = Rd

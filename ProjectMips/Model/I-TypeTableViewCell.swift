@@ -18,6 +18,8 @@ class I_TypeTableViewCell: UITableViewCell {
     
     @IBOutlet weak var ITypeRsTextField: UITextField!
     
+    @IBOutlet weak var ITypeOffsetTextField: UITextField!
+    @IBOutlet weak var InstructionIndexTextField: UILabel!
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
