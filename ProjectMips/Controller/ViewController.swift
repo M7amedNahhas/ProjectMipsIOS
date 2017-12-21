@@ -56,6 +56,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     
     var MemoryList = [Int]()
     
+    var PipeliningMode:Bool?
     
     // Add New Method
     @IBAction func AddNewRType(_ sender: UIButton) {
@@ -145,13 +146,15 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         var RegisterFile = ["zero":0 , "at":1 , "v0":2, "v1":3, "a0":4, "a1":5, "a2":6, "a3":7, "t0":8, "t1":9, "t2":10, "t3":11, "t4":12, "t5":13, "t6":14, "t7":15, "s0":16, "s1":17, "s2":18, "s3":19, "s4":20, "s5":21, "s6":22, "s7":23, "t8":24, "t9":25, "k0":26, "k1":27, "gp":28, "sp":29, "fp":30, "ra":31]
         
         RegisterFileIndex = RegisterFile[NameOfTheRegister]
+        
+        
     }
     
     func Fetch(InstructionFromTextField:String){
         
         var InstructionMemory = ["add":"add","sub":"sub"
             ,"and":"and","or":"or","slt":"slt","nor":"nor","sw":"sw","lw":"lw","srl":"srl","addi":"addi"]
-       InstructionFromFetch = InstructionMemory[InstructionFromTextField]
+        InstructionFromFetch = InstructionMemory[InstructionFromTextField]
         if InstructionFromFetch == "sw" || InstructionFromFetch == "lw" || InstructionFromFetch == "addi" {
             InstructionTypeFromFetch = "I"
         } else {
@@ -191,9 +194,17 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             var ExecutionList:[String:Int] = ["add":(rs?.Value)! + (rt?.Value)!,"sub":(rs?.Value)! - (rt?.Value)!]
             
             rd?.setValue(newValue: ExecutionList[InstructionFromFetch!]!)
-        } else {
+        }
+        
+        if InstructionFromFetch == "sw" || InstructionFromFetch == "lw"{
             
             memoryAddres = (rs?.Value)! + (offset)!
+        }
+        
+        if InstructionFromFetch == "addi" {
+            
+            rt?.setValue(newValue: (offset)! + (rs?.Value)!)
+            
         }
         
        ClockCycle = ClockCycle + 1
@@ -218,9 +229,10 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         if InstructionTypeFromFetch == "R" {
             RegisterFile[RegisterFileIndex!].setValue(newValue: (rd?.Value)!)
         }
-        if InstructionFromFetch == "lw" {
+        if InstructionFromFetch == "lw" || InstructionFromFetch == "addi" {
             RegisterFile[(rt?.ID)!].setValue(newValue: (rt?.Value)!)
         }
+
         print("After Right Back!")
         var z:Int = 0
         while z <= 31 {
@@ -306,6 +318,11 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     }
     
     @IBAction func ExcuteButtonDo(_ sender: UIButton) {
+    
+        if PipeliningMode == true {
+            
+            
+        }
         var j:Int = 0
         while j < typeArray.count {
             Fetch(InstructionFromTextField: typeArray[j].Intruction)
