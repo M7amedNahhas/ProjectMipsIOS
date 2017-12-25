@@ -30,6 +30,8 @@ class SecondViewController: UIViewController ,UITableViewDelegate,UITableViewDat
         tableView.delegate = self
         tableView.reloadData()
         setLabelText()
+        
+        
 
         // Do any additional setup after loading the view.
     }

@@ -365,6 +365,8 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             cellOne.RTypeRsTextField.text = typeArray[indexPath.row].Rs
             cellOne.RTypeRdTextField.text = typeArray[indexPath.row].Rd
             cellOne.IndexOfInstruction.text = "\(indexPath.row)"
+            
+            cellOne.textLabel?.numberOfLines = 3
         
             
             result = cellOne
@@ -376,7 +378,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             cellTwo.ITypeRtTextField.text = typeArray[indexPath.row].Rt
             cellTwo.ITypeOffsetTextField.text = typeArray[indexPath.row].Offset
             cellTwo.InstructionIndexTextField.text = "\(indexPath.row)"
-            
+            cellTwo.textLabel?.numberOfLines = 3
 
             result = cellTwo
         }
@@ -398,6 +400,10 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         
         RegisterFileInit()
         MemoryInit()
+        
+        TableView.estimatedRowHeight = 140
+        TableView.rowHeight = UITableViewAutomaticDimension
+        
     }
 
     override func didReceiveMemoryWarning() {
