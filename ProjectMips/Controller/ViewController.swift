@@ -56,12 +56,19 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     
     var MemoryList = [Int]()
     
-    var PipeliningMode:Bool?
+    var PipeliningClockCycle:Int = 0
+    
+    var ForwardingClockCycle:Int?
+    
+    var PreviousInstruction:Instruction?
+    
+    var PreviousToThePrevious:Instruction?
     
     // Add New Method
     @IBAction func AddNewRType(_ sender: UIButton) {
         
         typeArray.append(Instruction(inst:instRtypeNew.text! , Rd: rdRtypeNew.text!, Rs: rsRtypeNew.text!, Rt: rtRtypeNew.text!, Type: "R", Offset: "0"))
+        
          TableView.reloadData()
         
     }
@@ -69,15 +76,21 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     @IBAction func AddNewIType(_ sender: UIButton) {
         
         typeArray.append(Instruction(inst:instItypeNew.text! , Rd: "no", Rs: rsItypeNew.text!, Rt: rtItypeNew.text!, Type: "I", Offset:offsetItypeNew.text! ))
+        
         TableView.reloadData()
         
     }
     
     func RegisterFileInit() {
+        
         var i:Int = 0
+        
         var FirstCount:Int = 0
+        
         var SecondCount:Int = 0
+        
         var ThirdCount:Int = 0
+        
         var FourthCount:Int = 0
         
         while i <= 31 {
@@ -184,6 +197,42 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             offset = offsetFromTextField
             
         }
+        if PreviousInstruction != nil {
+            if InstructionTypeFromFetch == "R" && PreviousInstruction?.InstType == "I" {
+                if (rs?.ID)! == Int((PreviousInstruction?.Rt)!) || (rt?.ID)! == Int((PreviousInstruction?.Rt)!) {
+                    PipeliningClockCycle = PipeliningClockCycle + 2
+                }
+            }
+            if InstructionTypeFromFetch == "R" && PreviousInstruction?.InstType == "R" {
+                if (rs?.ID)! == Int((PreviousInstruction?.Rd)!) || (rt?.ID)! == Int((PreviousInstruction?.Rd)!) {
+                    PipeliningClockCycle = PipeliningClockCycle + 2
+                }
+            }
+            if InstructionTypeFromFetch == "I" && PreviousInstruction?.InstType == "R" {
+                if (rs?.ID)! == Int((PreviousInstruction?.Rd)!) {
+                    PipeliningClockCycle = PipeliningClockCycle + 2
+                }
+            }
+            
+             if InstructionTypeFromFetch == "I" && PreviousInstruction?.InstType == "I" {
+                if PreviousInstruction?.Intruction != "lw" {
+                    if (rs?.ID)! == Int((PreviousInstruction?.Rt)!) || (rt?.ID)! == Int((PreviousInstruction?.Rt)!) {
+                        PipeliningClockCycle = PipeliningClockCycle + 2
+                    }
+                }
+            }
+            
+        }
+        
+        if PreviousToThePrevious != nil {
+            if (rs?.ID)! == Int((PreviousToThePrevious?.Rt)!) || (rt?.ID)! == Int((PreviousToThePrevious?.Rt)!) {
+                PipeliningClockCycle = PipeliningClockCycle + 1
+            }
+            
+            if (rs?.ID)! == Int((PreviousToThePrevious?.Rd)!) || (rt?.ID)! == Int((PreviousToThePrevious?.Rd)!) {
+                PipeliningClockCycle = PipeliningClockCycle + 1
+            }
+        }
         
         ClockCycle = ClockCycle + 1
         
@@ -191,7 +240,11 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     
     func Execution(){
         if InstructionTypeFromFetch == "R" {
-            var ExecutionList:[String:Int] = ["add":(rs?.Value)! + (rt?.Value)!,"sub":(rs?.Value)! - (rt?.Value)!]
+            var ExecutionList:[String:Int] = ["add":(rs?.Value)! + (rt?.Value)!,
+                                              "sub":(rs?.Value)! - (rt?.Value)!,
+                                              "or":(rs?.Value)! | (rt?.Value)!,
+                                              "and":(rs?.Value)! & (rt?.Value)!,
+                                              "nor":~((rs?.Value)! | (rt?.Value)!)]
             
             rd?.setValue(newValue: ExecutionList[InstructionFromFetch!]!)
         }
@@ -213,11 +266,15 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     func Memory() {
         
         if InstructionFromFetch == "sw" {
+            
             MemoryList.insert((rt?.Value)!, at: memoryAddres!)
+            
         }
         
         if InstructionFromFetch == "lw" {
+            
             rt?.setValue(newValue: MemoryList[memoryAddres!])
+            
             print("rt in memory \(rt?.Value)")
         }
         
@@ -240,6 +297,11 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             z = z+1
         }
         ClockCycle = ClockCycle + 1
+        if PreviousInstruction != nil {
+           PreviousToThePrevious = PreviousInstruction
+        }
+        PreviousInstruction = Instruction(inst: InstructionFromFetch!, Rd: ("\(rd?.ID ?? 0)"), Rs: ("\(rs?.ID ?? 0)"), Rt: ("\(rt?.ID ?? 0)"), Type: InstructionTypeFromFetch!, Offset: ("\(offset ?? 0)"))
+        
     }
     
     
@@ -318,11 +380,6 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     }
     
     @IBAction func ExcuteButtonDo(_ sender: UIButton) {
-    
-        if PipeliningMode == true {
-            
-            
-        }
         var j:Int = 0
         while j < typeArray.count {
             Fetch(InstructionFromTextField: typeArray[j].Intruction)
@@ -333,6 +390,21 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             
             j = j + 1
         }
+        print("ClockCycle \(ClockCycle)")
+        Pipelining()
+        
+    }
+    
+    func Pipelining() {
+
+        PipeliningClockCycle = 5 + (typeArray.count - 1) + PipeliningClockCycle
+        print("Pipelining ClockCycle  \(PipeliningClockCycle)")
+
+    }
+    
+    func FullForwarding() {
+        
+       // ForwardingClockCycle =
         
     }
     
