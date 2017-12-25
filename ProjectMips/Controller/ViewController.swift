@@ -58,11 +58,13 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     
     var PipeliningClockCycle:Int = 0
     
-    var ForwardingClockCycle:Int?
+    var ForwardingClockCycle:Int = 0
     
     var PreviousInstruction:Instruction?
     
     var PreviousToThePrevious:Instruction?
+    
+    var DataDependceArray = [DataDependnse]()
     
     // Add New Method
     @IBAction func AddNewRType(_ sender: UIButton) {
@@ -178,7 +180,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     
     }
     
-    func Decode(rsFromTextField:String , rdFromTextField:String , rtFromTextField:String , offsetFromTextField:Int){
+    func Decode(rsFromTextField:String , rdFromTextField:String , rtFromTextField:String , offsetFromTextField:Int,Index:Int){
         
         RegisterFileIndexFinder(NameOfTheRegister: rsFromTextField)
         rs = RegisterFile[RegisterFileIndex!]
@@ -200,16 +202,32 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         if PreviousInstruction != nil {
             if InstructionTypeFromFetch == "R" && PreviousInstruction?.InstType == "I" {
                 if (rs?.ID)! == Int((PreviousInstruction?.Rt)!) || (rt?.ID)! == Int((PreviousInstruction?.Rt)!) {
+                    
+                    if (rs?.ID)! == Int((PreviousInstruction?.Rt)!) {
+                        DataDependceArray.append(DataDependnse(From:(PreviousInstruction?.Rt)!, to: (rs?.Name)!, noOfStall: 2, indexfrom: Index-1, indexTo: Index))
+                    }
+                    if (rt?.ID)! == Int((PreviousInstruction?.Rt)!) {
+                        DataDependceArray.append(DataDependnse(From:(PreviousInstruction?.Rt)!, to: (rt?.Name)!, noOfStall: 2, indexfrom: Index-1, indexTo: Index))
+                    }
                     PipeliningClockCycle = PipeliningClockCycle + 2
+
                 }
             }
             if InstructionTypeFromFetch == "R" && PreviousInstruction?.InstType == "R" {
                 if (rs?.ID)! == Int((PreviousInstruction?.Rd)!) || (rt?.ID)! == Int((PreviousInstruction?.Rd)!) {
+                    
+                    if (rs?.ID)! == Int((PreviousInstruction?.Rd)!) {
+                        DataDependceArray.append(DataDependnse(From:(PreviousInstruction?.Rd)!, to: (rs?.Name)!, noOfStall: 2, indexfrom: Index-1, indexTo: Index))
+                    }
+                    if (rt?.ID)! == Int((PreviousInstruction?.Rd)!) {
+                        DataDependceArray.append(DataDependnse(From:(PreviousInstruction?.Rd)!, to: (rt?.Name)!, noOfStall: 2, indexfrom: Index-1, indexTo: Index))
+                    }
                     PipeliningClockCycle = PipeliningClockCycle + 2
                 }
             }
             if InstructionTypeFromFetch == "I" && PreviousInstruction?.InstType == "R" {
                 if (rs?.ID)! == Int((PreviousInstruction?.Rd)!) {
+                    DataDependceArray.append(DataDependnse(From:(PreviousInstruction?.Rd)!, to: (rs?.Name)!, noOfStall: 2, indexfrom: Index-1, indexTo: Index))
                     PipeliningClockCycle = PipeliningClockCycle + 2
                 }
             }
@@ -217,6 +235,14 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
              if InstructionTypeFromFetch == "I" && PreviousInstruction?.InstType == "I" {
                 if PreviousInstruction?.Intruction != "lw" {
                     if (rs?.ID)! == Int((PreviousInstruction?.Rt)!) || (rt?.ID)! == Int((PreviousInstruction?.Rt)!) {
+                        
+                        if (rs?.ID)! == Int((PreviousInstruction?.Rt)!) {
+                            DataDependceArray.append(DataDependnse(From:(PreviousInstruction?.Rt)!, to: (rs?.Name)!, noOfStall: 2, indexfrom: Index-1, indexTo: Index))
+                        }
+                        if (rt?.ID)! == Int((PreviousInstruction?.Rt)!) {
+                            DataDependceArray.append(DataDependnse(From:(PreviousInstruction?.Rt)!, to: (rt?.Name)!, noOfStall: 2, indexfrom: Index-1, indexTo: Index))
+                        }
+                        
                         PipeliningClockCycle = PipeliningClockCycle + 2
                     }
                 }
@@ -383,7 +409,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         var j:Int = 0
         while j < typeArray.count {
             Fetch(InstructionFromTextField: typeArray[j].Intruction)
-            Decode(rsFromTextField: typeArray[j].Rs, rdFromTextField: typeArray[j].Rd, rtFromTextField: typeArray[j].Rt, offsetFromTextField: Int(typeArray[j].Offset)!)
+            Decode(rsFromTextField: typeArray[j].Rs, rdFromTextField: typeArray[j].Rd, rtFromTextField: typeArray[j].Rt, offsetFromTextField: Int(typeArray[j].Offset)!, Index: j)
             Execution()
             Memory()
             WrightBack()
@@ -392,6 +418,9 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         }
         print("ClockCycle \(ClockCycle)")
         Pipelining()
+        FullForwarding()
+        
+        performSegue(withIdentifier: "ShowSecond", sender: nil)
         
     }
     
@@ -405,7 +434,32 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     func FullForwarding() {
         
        // ForwardingClockCycle =
+        ForwardingClockCycle = 5 + (typeArray.count - 1) + ForwardingClockCycle
+        print("Forwarding ClockCycle  \(ForwardingClockCycle)")
         
+    }
+    
+    func clearAll(){
+        ClockCycle = 0
+        PipeliningClockCycle = 0
+        ForwardingClockCycle = 0
+        RegisterFile.removeAll()
+        RegisterFileInit()
+        MemoryList.removeAll()
+        MemoryInit()
+        PreviousInstruction = nil
+        PreviousToThePrevious = nil
+        
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "ShowSecond" {
+            let nav = segue.destination as! SecondViewController
+            nav.TableViewArray = DataDependceArray
+            nav.NormalCC = ClockCycle
+            nav.PipeliningCC = PipeliningClockCycle
+            nav.ForwardingCC = ForwardingClockCycle
+        }
     }
     
 
