@@ -199,6 +199,12 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             offset = offsetFromTextField
             
         }
+        DetectDataDependece(Index: Index)
+        ClockCycle = ClockCycle + 1
+        
+    }
+    func DetectDataDependece(Index:Int){
+        // PipeLining
         if PreviousInstruction != nil {
             if InstructionTypeFromFetch == "R" && PreviousInstruction?.InstType == "I" {
                 if (rs?.ID)! == Int((PreviousInstruction?.Rt)!) || (rt?.ID)! == Int((PreviousInstruction?.Rt)!) {
@@ -210,7 +216,9 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
                         DataDependceArray.append(DataDependnse(From:(PreviousInstruction?.Rt)!, to: (rt?.Name)!, noOfStall: 2, indexfrom: Index-1, indexTo: Index))
                     }
                     PipeliningClockCycle = PipeliningClockCycle + 2
-
+                    ForwardingClockCycle = ForwardingClockCycle + 1
+                
+                    
                 }
             }
             if InstructionTypeFromFetch == "R" && PreviousInstruction?.InstType == "R" {
@@ -232,7 +240,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
                 }
             }
             
-             if InstructionTypeFromFetch == "I" && PreviousInstruction?.InstType == "I" {
+            if InstructionTypeFromFetch == "I" && PreviousInstruction?.InstType == "I" {
                 if PreviousInstruction?.Intruction != "lw" {
                     if (rs?.ID)! == Int((PreviousInstruction?.Rt)!) || (rt?.ID)! == Int((PreviousInstruction?.Rt)!) {
                         
@@ -244,6 +252,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
                         }
                         
                         PipeliningClockCycle = PipeliningClockCycle + 2
+                        ForwardingClockCycle = ForwardingClockCycle + 1
                     }
                 }
             }
@@ -260,10 +269,10 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             }
         }
         
-        ClockCycle = ClockCycle + 1
+        // Forwarding
+        
         
     }
-    
     func Execution(){
         if InstructionTypeFromFetch == "R" {
             var ExecutionList:[String:Int] = ["add":(rs?.Value)! + (rt?.Value)!,
@@ -301,7 +310,6 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             
             rt?.setValue(newValue: MemoryList[memoryAddres!])
             
-            print("rt in memory \(rt?.Value)")
         }
         
         ClockCycle = ClockCycle + 1
@@ -427,6 +435,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         FullForwarding()
         
         performSegue(withIdentifier: "ShowSecond", sender: nil)
+        clearAll()
         
     }
     
@@ -455,6 +464,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         MemoryInit()
         PreviousInstruction = nil
         PreviousToThePrevious = nil
+        DataDependceArray.removeAll()
         
     }
     
@@ -469,6 +479,13 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     }
     
 
-
+    @IBAction func DoClearActionButton(_ sender: UIButton) {
+        
+        typeArray.removeAll()
+        clearAll()
+        TableView.reloadData()
+        
+    }
+    
 }
 
