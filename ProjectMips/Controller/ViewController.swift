@@ -241,32 +241,47 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             }
             
             if InstructionTypeFromFetch == "I" && PreviousInstruction?.InstType == "I" {
-                if PreviousInstruction?.Intruction != "lw" {
                     if (rs?.ID)! == Int((PreviousInstruction?.Rt)!) || (rt?.ID)! == Int((PreviousInstruction?.Rt)!) {
-                        
                         if (rs?.ID)! == Int((PreviousInstruction?.Rt)!) {
                             DataDependceArray.append(DataDependnse(From:(PreviousInstruction?.Rt)!, to: (rs?.Name)!, noOfStall: 2, indexfrom: Index-1, indexTo: Index))
                         }
                         if (rt?.ID)! == Int((PreviousInstruction?.Rt)!) {
                             DataDependceArray.append(DataDependnse(From:(PreviousInstruction?.Rt)!, to: (rt?.Name)!, noOfStall: 2, indexfrom: Index-1, indexTo: Index))
                         }
-                        
                         PipeliningClockCycle = PipeliningClockCycle + 2
-                        ForwardingClockCycle = ForwardingClockCycle + 1
-                    }
+                        if PreviousInstruction?.Intruction != "addi" {
+                            ForwardingClockCycle = ForwardingClockCycle + 1
+                        }
                 }
-            }
+                }
+            
             
         }
         
         if PreviousToThePrevious != nil {
+            if InstructionFromFetch == "I" && InstructionTypeFromFetch == "sw" {
+                if PreviousToThePrevious?.InstType == "I" {
+                    if (rt?.ID)! == Int((PreviousToThePrevious?.Rt)!) {
+                        PipeliningClockCycle = PipeliningClockCycle + 2
+                    }
+                }
+            }
+            
+            /*if InstructionTypeFromFetch == "R" {
+                if PreviousToThePrevious?.InstType == "I" {
+                    if (rs?.ID)! == Int((PreviousToThePrevious?.Rt)!) || (rt?.ID)! == Int((PreviousToThePrevious?.Rt)!) {
+                        PipeliningClockCycle = PipeliningClockCycle + 1
+                    }
+                }
+            } */
+            /*
             if (rs?.ID)! == Int((PreviousToThePrevious?.Rt)!) || (rt?.ID)! == Int((PreviousToThePrevious?.Rt)!) {
                 PipeliningClockCycle = PipeliningClockCycle + 1
             }
             
             if (rs?.ID)! == Int((PreviousToThePrevious?.Rd)!) || (rt?.ID)! == Int((PreviousToThePrevious?.Rd)!) {
                 PipeliningClockCycle = PipeliningClockCycle + 1
-            }
+            }*/
         }
         
         // Forwarding
