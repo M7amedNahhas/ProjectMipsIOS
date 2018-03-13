@@ -59,7 +59,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     var DataDependceArray = [DataDependnse]()
     
     var InstructionMemory = ["add":"add","sub":"sub"
-        ,"and":"and","or":"or","slt":"slt","nor":"nor","sw":"sw","lw":"lw","srl":"srl","addi":"addi","beq":"beq"]
+        ,"and":"and","or":"or","slt":"slt","nor":"nor","sw":"sw","lw":"lw","srl":"srl","addi":"addi","beq":"beq","bne":"bne","bgt":"bgt" ]
     
     var BranchFlagIsON:Bool = false
     
@@ -68,7 +68,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     
     var instructionsPickerView = UIPickerView()
     
-    var instructionPickerData = ["add","sub","and","or","slt","nor","sw","lw","srl","addi","beq"]
+    var instructionPickerData = ["add","sub","and","or","slt","nor","sw","lw","srl","addi","beq","bne","bgt"]
     
     var iTypeMode:Bool?
     
@@ -266,7 +266,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         
         
         InstructionFromFetch = InstructionMemory[InstructionFromTextField]
-        if InstructionFromFetch == "sw" || InstructionFromFetch == "lw" || InstructionFromFetch == "addi" || InstructionFromFetch == "beq" || InstructionFromFetch == "bne" {
+        if InstructionFromFetch == "sw" || InstructionFromFetch == "lw" || InstructionFromFetch == "addi" || InstructionFromFetch == "beq" || InstructionFromFetch == "bne" || InstructionFromFetch == "bgt" {
             InstructionTypeFromFetch = "I"
         } else {
             InstructionTypeFromFetch = "R"
@@ -407,6 +407,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         
     }
     func Execution(){
+        BranchFlagIsON = false
         if InstructionTypeFromFetch == "R" {
             var ExecutionList:[String:Int] = ["add":(rs?.Value)! + (rt?.Value)!,
                                               "sub":(rs?.Value)! - (rt?.Value)!,
@@ -423,17 +424,35 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         }
         
         if InstructionFromFetch == "addi" {
-            
+
             rt?.setValue(newValue: (offset)! + (rs?.Value)!)
             
         }
         if InstructionFromFetch == "beq"{
+            if rs?.Value == rt?.Value {
+                BranchFlagIsON = true
+            } else {
+                BranchFlagIsON = false
+            }
+            
+            
+        }
+        if InstructionFromFetch == "bne"{
             if rs?.Value != rt?.Value {
                 BranchFlagIsON = true
             } else {
                 BranchFlagIsON = false
             }
         }
+        if InstructionFromFetch == "bgt"{
+            if rs!.Value > rt!.Value {
+                BranchFlagIsON = true
+            }else {
+                BranchFlagIsON = false
+            }
+        }
+       
+        
     
         
        ClockCycle = ClockCycle + 1
@@ -462,8 +481,11 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         if InstructionTypeFromFetch == "R" {
             RegisterFile[RegisterFileIndex!].setValue(newValue: (rd?.Value)!)
         }
-        if InstructionFromFetch == "lw" || InstructionFromFetch == "addi" {
+        if InstructionFromFetch == "lw" {
             RegisterFile[(rt?.ID)!].setValue(newValue: ((rs?.Value)! + offset!))
+        }
+        if InstructionFromFetch == "addi" {
+            RegisterFile[(rt?.ID)!].setValue(newValue: (rt?.Value)!)
         }
 
         print("After Right Back!")
