@@ -55,7 +55,7 @@ class SecondViewController: UIViewController ,UITableViewDelegate,UITableViewDat
         let cell = tableView.dequeueReusableCell(withIdentifier: "DataCell") as! DataDependTableViewCell
         cell.indexfromCell.text = String(TableViewArray[indexPath.row].IndexFrom)
         cell.indextoCell.text = String(TableViewArray[indexPath.row].IndexTo)
-        cell.noStallCell.text = String(TableViewArray[indexPath.row].NumberOfStalls)
+        cell.noStallCell.text = "Stalls \(String(TableViewArray[indexPath.row].NumberOfStalls))"
         cell.regfromCell.text = TableViewArray[indexPath.row].RegisterFrom
         cell.regtoCell.text = TableViewArray[indexPath.row].RegisterTo
         result = cell

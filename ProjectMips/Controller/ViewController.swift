@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource {
+class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource, UIPickerViewDelegate , UIPickerViewDataSource {
     
     
     
@@ -20,17 +20,9 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     
     @IBOutlet weak var rtRtypeNew: UITextField!
     
+    // can be used as an offset also
+    
     @IBOutlet weak var rdRtypeNew: UITextField!
-    
-    // I-Type
-    
-    @IBOutlet weak var instItypeNew: UITextField!
-    
-    @IBOutlet weak var rtItypeNew: UITextField!
-    
-    @IBOutlet weak var rsItypeNew: UITextField!
-    
-    @IBOutlet weak var offsetItypeNew: UITextField!
     
     var InstructionFromFetch:String?
     
@@ -66,20 +58,120 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     
     var DataDependceArray = [DataDependnse]()
     
-    // Add New Method
-    @IBAction func AddNewRType(_ sender: UIButton) {
+    var InstructionMemory = ["add":"add","sub":"sub"
+        ,"and":"and","or":"or","slt":"slt","nor":"nor","sw":"sw","lw":"lw","srl":"srl","addi":"addi","beq":"beq"]
+    
+    var BranchFlagIsON:Bool = false
+    
+    // Picker View
+
+    
+    var instructionsPickerView = UIPickerView()
+    
+    var instructionPickerData = ["add","sub","and","or","slt","nor","sw","lw","srl","addi","beq"]
+    
+    var iTypeMode:Bool?
+    
+    var rsPickerView = UIPickerView()
+    
+    var rtPickerView = UIPickerView()
+    
+    var rdPickerView = UIPickerView()
+    
+    
+    func numberOfComponents(in pickerView: UIPickerView) -> Int {
+        return 1
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+        if pickerView.tag == 10 {
+            return instructionPickerData[row]
+        }
         
-        typeArray.append(Instruction(inst:instRtypeNew.text! , Rd: rdRtypeNew.text!, Rs: rsRtypeNew.text!, Rt: rtRtypeNew.text!, Type: "R", Offset: "0"))
+        if pickerView.tag == 100  {
+          return RegisterFile[row].Name
+        }
         
-         TableView.reloadData()
+        if pickerView.tag == 1000  {
+            return RegisterFile[row].Name
+        }
+        
+        if pickerView.tag == 10000 {
+            return RegisterFile[row].Name
+        }
+
+        return nil
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+        if pickerView.tag == 10 {
+            return instructionPickerData.count
+        }
+        
+        if pickerView.tag == 100 {
+            return RegisterFile.count
+        }
+        
+        if pickerView.tag == 1000 {
+            return RegisterFile.count
+        }
+        
+        if pickerView.tag == 10000 {
+            return RegisterFile.count
+        }
+        return 0
         
     }
     
-    @IBAction func AddNewIType(_ sender: UIButton) {
+    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         
-        typeArray.append(Instruction(inst:instItypeNew.text! , Rd: "no", Rs: rsItypeNew.text!, Rt: rtItypeNew.text!, Type: "I", Offset:offsetItypeNew.text! ))
+        if pickerView.tag == 10 {
+            instRtypeNew.text = instructionPickerData[row]
+            if instructionPickerData[row] == "sw" || instructionPickerData[row] == "lw" || instructionPickerData[row] == "addi" || instructionPickerData[row] == "beq" {
+                iTypeMode = true
+            } else {
+                iTypeMode = false
+            }
+            CheckITypeMode()
+        }
         
-        TableView.reloadData()
+        if pickerView.tag == 100 {
+            rsRtypeNew.text = RegisterFile[row].Name
+        }
+        
+        if pickerView.tag == 1000 {
+            rtRtypeNew.text = RegisterFile[row].Name
+        }
+        
+        if pickerView.tag == 10000 {
+            rdRtypeNew.text = RegisterFile[row].Name
+        }
+    }
+    
+    // Add New Method
+    @IBAction func AddNewInstruction(_ sender: UIButton) {
+        
+        if iTypeMode == false {
+            // R Type
+            typeArray.append(Instruction(inst:instRtypeNew.text! , Rd: rdRtypeNew.text!, Rs: rsRtypeNew.text!, Rt: rtRtypeNew.text!, Type: "R", Offset: "0", PipeliningStalls: 0, ForwadingStalls: 0))
+        }
+        
+        if iTypeMode == true {
+            // I Type
+        
+            typeArray.append(Instruction(inst:instRtypeNew.text! , Rd: "no", Rs: rsRtypeNew.text!, Rt: rtRtypeNew.text!, Type: "I", Offset:rdRtypeNew.text!, PipeliningStalls: 0, ForwadingStalls: 0 ))
+        }
+         TableView.reloadData()
+    }
+
+    @IBAction func editTableViewButton(_ sender: UIButton) {
+        if TableView.isEditing == true {
+            
+                    TableView.isEditing = false
+        } else {
+            
+                    TableView.isEditing = true
+        }
         
     }
     
@@ -97,10 +189,10 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         
         while i <= 31 {
             if i == 0 {
-                RegisterFile.append(Register(RegName: "zero", RegID: i, RegValue: 10))
+                RegisterFile.append(Register(RegName: "zero", RegID: i, RegValue: 0))
             }
             if i == 1 {
-                RegisterFile.append(Register(RegName: "at", RegID: i, RegValue: 5))
+                RegisterFile.append(Register(RegName: "at", RegID: i, RegValue: 0))
             }
             if i >= 2 && i <= 3 {
                 RegisterFile.append(Register(RegName: "v\(FirstCount)", RegID: i, RegValue: 0))
@@ -144,6 +236,11 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             }
             i = i + 1
         }
+        
+        rsPickerView.reloadAllComponents()
+        rtPickerView.reloadAllComponents()
+        rdPickerView.reloadAllComponents()
+
     }
     
     func MemoryInit(){
@@ -167,10 +264,9 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     
     func Fetch(InstructionFromTextField:String){
         
-        var InstructionMemory = ["add":"add","sub":"sub"
-            ,"and":"and","or":"or","slt":"slt","nor":"nor","sw":"sw","lw":"lw","srl":"srl","addi":"addi"]
+        
         InstructionFromFetch = InstructionMemory[InstructionFromTextField]
-        if InstructionFromFetch == "sw" || InstructionFromFetch == "lw" || InstructionFromFetch == "addi" {
+        if InstructionFromFetch == "sw" || InstructionFromFetch == "lw" || InstructionFromFetch == "addi" || InstructionFromFetch == "beq" || InstructionFromFetch == "bne" {
             InstructionTypeFromFetch = "I"
         } else {
             InstructionTypeFromFetch = "R"
@@ -210,15 +306,21 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
                 if (rs?.ID)! == Int((PreviousInstruction?.Rt)!) || (rt?.ID)! == Int((PreviousInstruction?.Rt)!) {
                     
                     if (rs?.ID)! == Int((PreviousInstruction?.Rt)!) {
-                        DataDependceArray.append(DataDependnse(From:(PreviousInstruction?.Rt)!, to: (rs?.Name)!, noOfStall: 2, indexfrom: Index-1, indexTo: Index))
+                        DataDependceArray.append(DataDependnse(From:(RegisterFile[Int((PreviousInstruction?.Rt)!)!].Name), to: (rs?.Name)!, noOfStall: 2, indexfrom: Index-1, indexTo: Index))
                     }
                     if (rt?.ID)! == Int((PreviousInstruction?.Rt)!) {
-                        DataDependceArray.append(DataDependnse(From:(PreviousInstruction?.Rt)!, to: (rt?.Name)!, noOfStall: 2, indexfrom: Index-1, indexTo: Index))
+                        DataDependceArray.append(DataDependnse(From:(RegisterFile[Int((PreviousInstruction?.Rt)!)!].Name), to: (rt?.Name)!, noOfStall: 2, indexfrom: Index-1, indexTo: Index))
                     }
-                    PipeliningClockCycle = PipeliningClockCycle + 2
-                    ForwardingClockCycle = ForwardingClockCycle + 1
-                
                     
+                    
+                    PipeliningClockCycle = PipeliningClockCycle + 2
+                    typeArray[Index].setStallsPipelining(stalls: 2)
+                    
+                    if PreviousInstruction?.Intruction != "addi" {
+                        ForwardingClockCycle = ForwardingClockCycle + 1
+                        typeArray[Index].setStallsForwarding(stalls: 1)
+                    }
+                
                 }
             }
             if InstructionTypeFromFetch == "R" && PreviousInstruction?.InstType == "R" {
@@ -231,41 +333,57 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
                         DataDependceArray.append(DataDependnse(From:(PreviousInstruction?.Rd)!, to: (rt?.Name)!, noOfStall: 2, indexfrom: Index-1, indexTo: Index))
                     }
                     PipeliningClockCycle = PipeliningClockCycle + 2
+                    typeArray[Index].setStallsPipelining(stalls: 2)
                 }
             }
             if InstructionTypeFromFetch == "I" && PreviousInstruction?.InstType == "R" {
                 if (rs?.ID)! == Int((PreviousInstruction?.Rd)!) {
                     DataDependceArray.append(DataDependnse(From:(PreviousInstruction?.Rd)!, to: (rs?.Name)!, noOfStall: 2, indexfrom: Index-1, indexTo: Index))
                     PipeliningClockCycle = PipeliningClockCycle + 2
+                    typeArray[Index].setStallsPipelining(stalls: 2)
                 }
             }
             
             if InstructionTypeFromFetch == "I" && PreviousInstruction?.InstType == "I" {
                     if (rs?.ID)! == Int((PreviousInstruction?.Rt)!) || (rt?.ID)! == Int((PreviousInstruction?.Rt)!) {
                         if (rs?.ID)! == Int((PreviousInstruction?.Rt)!) {
+                            
                             DataDependceArray.append(DataDependnse(From:(PreviousInstruction?.Rt)!, to: (rs?.Name)!, noOfStall: 2, indexfrom: Index-1, indexTo: Index))
+                            
                         }
                         if (rt?.ID)! == Int((PreviousInstruction?.Rt)!) {
+                            
                             DataDependceArray.append(DataDependnse(From:(PreviousInstruction?.Rt)!, to: (rt?.Name)!, noOfStall: 2, indexfrom: Index-1, indexTo: Index))
+                            
                         }
+                        
                         PipeliningClockCycle = PipeliningClockCycle + 2
+                        
+                        typeArray[Index].setStallsPipelining(stalls: 2)
+                        
                         if PreviousInstruction?.Intruction != "addi" {
+                            
                             ForwardingClockCycle = ForwardingClockCycle + 1
+                            
+                            typeArray[Index].setStallsForwarding(stalls: 1)
                         }
                 }
                 }
             
             
         }
-        
+        // Here we detcet previuous to previous
         if PreviousToThePrevious != nil {
             if InstructionFromFetch == "I" && InstructionTypeFromFetch == "sw" {
                 if PreviousToThePrevious?.InstType == "I" {
                     if (rt?.ID)! == Int((PreviousToThePrevious?.Rt)!) {
                         PipeliningClockCycle = PipeliningClockCycle + 2
+                        typeArray[Index].setStallsPipelining(stalls: 2)
                     }
                 }
             }
+            
+            
             
             /*if InstructionTypeFromFetch == "R" {
                 if PreviousToThePrevious?.InstType == "I" {
@@ -309,6 +427,14 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             rt?.setValue(newValue: (offset)! + (rs?.Value)!)
             
         }
+        if InstructionFromFetch == "beq"{
+            if rs?.Value != rt?.Value {
+                BranchFlagIsON = true
+            } else {
+                BranchFlagIsON = false
+            }
+        }
+    
         
        ClockCycle = ClockCycle + 1
     }
@@ -318,6 +444,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         if InstructionFromFetch == "sw" {
             
             MemoryList.insert((rt?.Value)!, at: memoryAddres!)
+            
             
         }
         
@@ -336,7 +463,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             RegisterFile[RegisterFileIndex!].setValue(newValue: (rd?.Value)!)
         }
         if InstructionFromFetch == "lw" || InstructionFromFetch == "addi" {
-            RegisterFile[(rt?.ID)!].setValue(newValue: (rt?.Value)!)
+            RegisterFile[(rt?.ID)!].setValue(newValue: ((rs?.Value)! + offset!))
         }
 
         print("After Right Back!")
@@ -349,7 +476,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         if PreviousInstruction != nil {
            PreviousToThePrevious = PreviousInstruction
         }
-        PreviousInstruction = Instruction(inst: InstructionFromFetch!, Rd: ("\(rd?.ID ?? 0)"), Rs: ("\(rs?.ID ?? 0)"), Rt: ("\(rt?.ID ?? 0)"), Type: InstructionTypeFromFetch!, Offset: ("\(offset ?? 0)"))
+        PreviousInstruction = Instruction(inst: InstructionFromFetch!, Rd: ("\(rd?.ID ?? 0)"), Rs: ("\(rs?.ID ?? 0)"), Rt: ("\(rt?.ID ?? 0)"), Type: InstructionTypeFromFetch!, Offset: ("\(offset ?? 0)"), PipeliningStalls: 0, ForwadingStalls: 0)
         
     }
     
@@ -373,6 +500,12 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         TableView.reloadData()
     }
     
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
+        if editingStyle == .delete {
+            typeArray.remove(at: indexPath.row)
+            tableView.reloadData()
+        }
+    }
     
     
     
@@ -419,13 +552,44 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         
         TableView.delegate = self
         TableView.reloadData()
-        TableView.isEditing = true
         
-        RegisterFileInit()
-        MemoryInit()
+        
+        instructionsPickerView.delegate = self
+        instructionsPickerView.dataSource = self
+        instructionsPickerView.tag = 10
+        instRtypeNew.inputView = instructionsPickerView
+        
+        rsPickerView.delegate = self
+        rsPickerView.dataSource = self
+        rsPickerView.tag = 100
+        rsRtypeNew.inputView = rsPickerView
+        
+        rtPickerView.delegate = self
+        rtPickerView.dataSource = self
+        rtPickerView.tag = 1000
+        rtRtypeNew.inputView = rtPickerView
+        
+        rdPickerView.delegate = self
+        rdPickerView.dataSource = self
+        rdPickerView.tag = 10000
+        rdRtypeNew.inputView = rdPickerView
+        
+        let toolBar = UIToolbar(frame: CGRect(x: 0, y: self.view.frame.size.height/6, width: self.view.frame.size.width, height: 40.0))
+        
+        let doneButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.done, target: self, action: #selector(ViewController.donePressed))
+        
+        toolBar.setItems([doneButton], animated: true)
+        
+        instRtypeNew.inputAccessoryView = toolBar
+        rtRtypeNew.inputAccessoryView = toolBar
+        rsRtypeNew.inputAccessoryView = toolBar
+        rdRtypeNew.inputAccessoryView = toolBar
         
         TableView.estimatedRowHeight = 140
         TableView.rowHeight = UITableViewAutomaticDimension
+        
+        RegisterFileInit()
+        MemoryInit()
         
     }
 
@@ -434,24 +598,52 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         // Dispose of any resources that can be recreated.
     }
     
+    @objc func donePressed(_ sender: UIBarButtonItem) {
+       // jobTypeTextField.text = SelectedPickerType?.name
+     //   jobGenderTextField.text = selectedGender
+        
+        CheckITypeMode()
+        
+       // rtRtypeNew.text =
+        
+        
+        instRtypeNew.resignFirstResponder()
+        rtRtypeNew.resignFirstResponder()
+        rsRtypeNew.resignFirstResponder()
+        rdRtypeNew.resignFirstResponder()
+
+        
+    }
+    
     @IBAction func ExcuteButtonDo(_ sender: UIButton) {
-        var j:Int = 0
-        while j < typeArray.count {
-            Fetch(InstructionFromTextField: typeArray[j].Intruction)
-            Decode(rsFromTextField: typeArray[j].Rs, rdFromTextField: typeArray[j].Rd, rtFromTextField: typeArray[j].Rt, offsetFromTextField: Int(typeArray[j].Offset)!, Index: j)
-            Execution()
-            Memory()
-            WrightBack()
-            
-            j = j + 1
+        if typeArray.isEmpty == false {
+            var j:Int = 0
+            var indexOfArrayForLabel:Int = 0
+            while j < typeArray.count {
+                Fetch(InstructionFromTextField: typeArray[j].Intruction)
+                Decode(rsFromTextField: typeArray[j].Rs, rdFromTextField: typeArray[j].Rd, rtFromTextField: typeArray[j].Rt, offsetFromTextField: Int(typeArray[j].Offset) ?? 0, Index: j)
+                Execution()
+                Memory()
+                WrightBack()
+                print("Pipe \(typeArray[j].PipeliningStallsNumber) Forwarding \(typeArray[j].ForwardingStallsNumber)")
+                if BranchFlagIsON == true {
+                    j = offset!
+                } else {
+                   j = j + 1
+                }
+                indexOfArrayForLabel =  indexOfArrayForLabel + 1
+                
+            }
+            print("ClockCycle \(ClockCycle)")
+            Pipelining()
+            FullForwarding()
+            print("loop count \(indexOfArrayForLabel)")
+            performSegue(withIdentifier: "ShowSecond", sender: nil)
+            clearAll()
+        } else {
+            createAlertWithOnlyOkAction(title: " ", measge: Texts.NO_INSTRUCTIONS_ADDED)
         }
-        print("ClockCycle \(ClockCycle)")
-        Pipelining()
-        FullForwarding()
-        
-        performSegue(withIdentifier: "ShowSecond", sender: nil)
-        clearAll()
-        
+
     }
     
     func Pipelining() {
@@ -480,6 +672,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         PreviousInstruction = nil
         PreviousToThePrevious = nil
         DataDependceArray.removeAll()
+        BranchFlagIsON = false
         
     }
     
@@ -500,6 +693,31 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         clearAll()
         TableView.reloadData()
         
+    }
+    
+    func CheckITypeMode(){
+        if iTypeMode == true {
+            rdRtypeNew.inputView = nil
+            rdRtypeNew.placeholder = "offset"
+            rdRtypeNew.keyboardType = .numberPad
+            // rdRtypeNew.text = nil
+            rdRtypeNew.reloadInputViews()
+            
+            
+        }
+        if iTypeMode == false {
+            rdRtypeNew.inputView = rdPickerView
+            rdRtypeNew.placeholder = "rd"
+            
+        }
+    }
+    
+    func createAlertWithOnlyOkAction(title :String , measge :String) {
+        let alert = UIAlertController(title: title, message: measge, preferredStyle: UIAlertControllerStyle.alert)
+        alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: { (action) in
+            alert.dismiss(animated: true, completion: nil)
+        }))
+        self.present(alert, animated: true, completion: nil)
     }
     
 }

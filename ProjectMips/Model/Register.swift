@@ -17,21 +17,29 @@ class Register {
     private var _Value:Int
     
     var Name:String {
+        
         return _name
+        
     }
     
     var ID:Int {
+        
         return _ID
+        
     }
     
     var Value:Int {
+        
         return _Value
+        
     }
     
     init(RegName:String , RegID:Int , RegValue:Int){
         
         _name = RegName
+        
         _ID = RegID
+        
         _Value = RegValue
     
     }
