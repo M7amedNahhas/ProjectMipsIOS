@@ -59,7 +59,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     var DataDependceArray = [DataDependnse]()
     
     var InstructionMemory = ["add":"add","sub":"sub"
-        ,"and":"and","or":"or","slt":"slt","nor":"nor","sw":"sw","lw":"lw","srl":"srl","addi":"addi","beq":"beq","bne":"bne","bgt":"bgt","blt":"blt" , "ble":"ble" , "bge":"bge"]
+        ,"and":"and","or":"or","slt":"slt","nor":"nor","sw":"sw","lw":"lw","srl":"srl","addi":"addi","beq":"beq","bne":"bne","bgt":"bgt","blt":"blt" , "ble":"ble" , "bge":"bge","":"",]
     
     var BranchFlagIsON:Bool = false
     
@@ -127,7 +127,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         
         if pickerView.tag == 10 {
             instRtypeNew.text = instructionPickerData[row]
-            if instructionPickerData[row] == "sw" || instructionPickerData[row] == "lw" || instructionPickerData[row] == "addi" || instructionPickerData[row] == "beq" || instructionPickerData[row] == "bgt" || instructionPickerData[row] == "blt" || instructionPickerData[row] == "ble" || instructionPickerData[row] == "bge"{
+            if instructionPickerData[row] == "sw" || instructionPickerData[row] == "lw" || instructionPickerData[row] == "addi" || instructionPickerData[row] == "beq" || instructionPickerData[row] == "bgt" || instructionPickerData[row] == "blt" || instructionPickerData[row] == "ble" || instructionPickerData[row] == "bge" || instructionPickerData[row] == "bne" {
                 iTypeMode = true
             } else {
                 iTypeMode = false
