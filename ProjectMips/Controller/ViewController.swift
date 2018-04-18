@@ -373,15 +373,19 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             
         }
         // Here we detcet previuous to previous
+    if PreviousInstruction != nil{
         if PreviousToThePrevious != nil {
-            if InstructionFromFetch == "I" && InstructionTypeFromFetch == "sw" {
-                if PreviousToThePrevious?.InstType == "I" {
+            if InstructionTypeFromFetch == "I" && InstructionFromFetch == "sw" {
+                if PreviousToThePrevious?.InstType == "I" || PreviousToThePrevious?.InstType == "lw"{
                     if (rt?.ID)! == Int((PreviousToThePrevious?.Rt)!) {
-                        PipeliningClockCycle = PipeliningClockCycle + 2
-                        typeArray[Index].setStallsPipelining(stalls: 2)
+                        PipeliningClockCycle = PipeliningClockCycle + 1
+                        typeArray[Index].setStallsPipelining(stalls: 1)
                     }
                 }
             }
+            
+        }
+        
             
             
             
