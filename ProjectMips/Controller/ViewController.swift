@@ -375,9 +375,63 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         // Here we detcet previuous to previous
     if PreviousInstruction != nil{
         if PreviousToThePrevious != nil {
+            if InstructionTypeFromFetch == "R" {
+                
+                if PreviousToThePrevious?.InstType == "R"{
+                    if (rd?.ID)! == Int((PreviousToThePrevious?.Rt)!) || (rd?.ID)! == Int((PreviousToThePrevious?.Rs)!) {
+                        if (rd?.ID)! == Int((PreviousToThePrevious?.Rt)!) {
+                            
+                            DataDependceArray.append(DataDependnse(From:(PreviousToThePrevious?.Rt)!, to: (rs?.Name)!, noOfStall: 2, indexfrom: Index-1, indexTo: Index))
+                            
+                        }
+                        if (rd?.ID)! == Int((PreviousToThePrevious?.Rs)!) {
+                            
+                            DataDependceArray.append(DataDependnse(From:(PreviousToThePrevious?.Rt)!, to: (rs?.Name)!, noOfStall: 2, indexfrom: Index-1, indexTo: Index))
+                            
+                        }
+                        if InstructionTypeFromFetch == "R" && PreviousInstruction?.InstType == "R"{
+                            if (Int((PreviousInstruction?.Rs)!) != Int((PreviousToThePrevious?.Rd)!)) {
+                                if (Int((PreviousInstruction?.Rt)!) != Int((PreviousToThePrevious?.Rd)!))  {
+                                    if (rs?.ID)! != Int((PreviousInstruction?.Rd)!) && (rt?.ID)! != Int((PreviousInstruction?.Rd)!) {
+                                        
+                                        PipeliningClockCycle = PipeliningClockCycle + 1
+                                        typeArray[Index].setStallsPipelining(stalls: 1)
+                                        
+                                    }
+                                }
+                                
+                                
+                            }
+                            
+                        }
+                        
+                        
+                    }
+                }
+               
+            }
             if InstructionTypeFromFetch == "I" && InstructionFromFetch == "sw" {
-                if PreviousToThePrevious?.InstType == "I" || PreviousToThePrevious?.InstType == "lw"{
-                    if (rt?.ID)! == Int((PreviousToThePrevious?.Rt)!) {
+                if PreviousToThePrevious?.InstType == "I" {
+                    if (rt?.ID)! == Int((PreviousToThePrevious?.Rt)!) || (rs?.ID)! == Int((PreviousToThePrevious?.Rt)!) {
+                        if (rs?.ID)! == Int((PreviousToThePrevious?.Rt)!) {
+                            
+                            DataDependceArray.append(DataDependnse(From:(PreviousToThePrevious?.Rt)!, to: (rs?.Name)!, noOfStall: 2, indexfrom: Index-1, indexTo: Index))
+                            
+                        }
+                        if (rt?.ID)! == Int((PreviousToThePrevious?.Rt)!) {
+                            
+                            DataDependceArray.append(DataDependnse(From:(PreviousToThePrevious?.Rt)!, to: (rt?.Name)!, noOfStall: 2, indexfrom: Index-1, indexTo: Index))
+                            
+                        }
+                        
+//                        if (rt?.ID)! == Int((PreviousToThePrevious?.Rt)!)   {
+//                            if (rt?.ID)! == Int((PreviousToThePrevious?.Rs)!){
+//                            //insted of 1 dependece make it 2 dependence
+//                            DataDependceArray.append(DataDependnse(From:(PreviousToThePrevious?.Rt)!, to: (rt?.Name)!, noOfStall: 2, indexfrom: Index-1, indexTo: Index))
+//                                print("ayman 7mar")
+//
+//                            }
+//                        }
                         PipeliningClockCycle = PipeliningClockCycle + 1
                         typeArray[Index].setStallsPipelining(stalls: 1)
                     }
