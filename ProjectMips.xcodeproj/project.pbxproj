@@ -331,7 +331,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 4DHT9ZZ933;
+				DEVELOPMENT_TEAM = BD66D485WS;
 				INFOPLIST_FILE = ProjectMips/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = ProjectMips.ProjectMips;
@@ -346,7 +346,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 4DHT9ZZ933;
+				DEVELOPMENT_TEAM = BD66D485WS;
 				INFOPLIST_FILE = ProjectMips/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = ProjectMips.ProjectMips;
