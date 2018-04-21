@@ -10,12 +10,12 @@ import UIKit
 
 class DataDependTableViewCell: UITableViewCell {
 
-    @IBOutlet weak var indexfromCell: UILabel!
-    @IBOutlet weak var indextoCell: UILabel!
+    @IBOutlet weak var indexfromCell: CustomLabel!
+    @IBOutlet weak var indextoCell: CustomLabel!
     
-    @IBOutlet weak var regfromCell: UILabel!
+    @IBOutlet weak var regfromCell: CustomLabel!
     
-    @IBOutlet weak var regtoCell: UILabel!
+    @IBOutlet weak var regtoCell: CustomLabel!
     
     @IBOutlet weak var noStallCell: UILabel!
     
