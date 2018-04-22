@@ -62,13 +62,14 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         ,"and":"and","or":"or","slt":"slt","nor":"nor","sw":"sw","lw":"lw","srl":"srl","addi":"addi","beq":"beq","bne":"bne","bgt":"bgt","blt":"blt" , "ble":"ble" , "bge":"bge","":"",]
     
     var BranchFlagIsON:Bool = false
+    var ClockCyclesPlus2 : Bool = false
     
     // Picker View
 
     
     var instructionsPickerView = UIPickerView()
     
-    var instructionPickerData = ["add","sub","and","or","slt","nor","sw","lw","srl","addi","beq","bne","bgt","blt", "ble", "bge"]
+    var instructionPickerData = ["choose..","add","sub","and","or","slt","nor","sw","lw","srl","addi","beq","bne","bgt","blt", "ble", "bge"]
     
     var iTypeMode:Bool?
     
@@ -315,6 +316,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
                     
                     PipeliningClockCycle = PipeliningClockCycle + 2
                     typeArray[Index].setStallsPipelining(stalls: 2)
+                    ClockCyclesPlus2 = true
                     
                     if PreviousInstruction?.Intruction != "addi" {
                         ForwardingClockCycle = ForwardingClockCycle + 1
@@ -334,6 +336,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
                     }
                     PipeliningClockCycle = PipeliningClockCycle + 2
                     typeArray[Index].setStallsPipelining(stalls: 2)
+                    ClockCyclesPlus2 = true
                 }
             }
             if InstructionTypeFromFetch == "I" && PreviousInstruction?.InstType == "R" {
@@ -341,34 +344,61 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
                     DataDependceArray.append(DataDependnse(From:(PreviousInstruction?.Rd)!, to: (rs?.Name)!, noOfStall: 2, indexfrom: Index-1, indexTo: Index))
                     PipeliningClockCycle = PipeliningClockCycle + 2
                     typeArray[Index].setStallsPipelining(stalls: 2)
+                    ClockCyclesPlus2 = true
                 }
             }
             
-            if InstructionTypeFromFetch == "I" && PreviousInstruction?.InstType == "I" {
-                    if (rs?.ID)! == Int((PreviousInstruction?.Rt)!) || (rt?.ID)! == Int((PreviousInstruction?.Rt)!) {
-                        if (rs?.ID)! == Int((PreviousInstruction?.Rt)!) {
-                            
-                            DataDependceArray.append(DataDependnse(From:(PreviousInstruction?.Rt)!, to: (rs?.Name)!, noOfStall: 2, indexfrom: Index-1, indexTo: Index))
-                            
-                        }
-                        if (rt?.ID)! == Int((PreviousInstruction?.Rt)!) {
-                            
-                            DataDependceArray.append(DataDependnse(From:(PreviousInstruction?.Rt)!, to: (rt?.Name)!, noOfStall: 2, indexfrom: Index-1, indexTo: Index))
-                            
-                        }
+            if InstructionTypeFromFetch == "I"{
+                if PreviousInstruction?.InstType != "lw" && PreviousInstruction?.InstType != "sw"{
+                    if (rs?.ID) == Int((PreviousInstruction?.Rt)!){
+                        DataDependceArray.append(DataDependnse(From:(PreviousInstruction?.Rt)!, to: (rs?.Name)!, noOfStall: 2, indexfrom: Index-1, indexTo: Index))
                         
                         PipeliningClockCycle = PipeliningClockCycle + 2
-                        
                         typeArray[Index].setStallsPipelining(stalls: 2)
+                        ClockCyclesPlus2 = true
+                    }
+                    
+                }
+                if PreviousInstruction?.InstType == "sw"{
+                    
+                }
+                if PreviousInstruction?.InstType == "lw"{
+                    if (rs?.ID)! == Int((PreviousInstruction?.Rt)!) {
                         
-                        if PreviousInstruction?.Intruction != "addi" {
-                            
-                            ForwardingClockCycle = ForwardingClockCycle + 1
-                            
-                            typeArray[Index].setStallsForwarding(stalls: 1)
-                        }
+                        DataDependceArray.append(DataDependnse(From:(PreviousInstruction?.Rs)!, to: (rt?.Name)!, noOfStall: 2, indexfrom: Index-1, indexTo: Index))
+                        
+                        PipeliningClockCycle = PipeliningClockCycle + 2
+                        typeArray[Index].setStallsPipelining(stalls: 2)
+                        ClockCyclesPlus2 = true
+                    }
                 }
-                }
+            }
+            
+//            if InstructionTypeFromFetch == "I" && PreviousInstruction?.InstType == "I" {
+//                    if (rs?.ID)! == Int((PreviousInstruction?.Rt)!) || (rt?.ID)! == Int((PreviousInstruction?.Rt)!) {
+//                        if (rs?.ID)! == Int((PreviousInstruction?.Rt)!) {
+//
+//                            DataDependceArray.append(DataDependnse(From:(PreviousInstruction?.Rt)!, to: (rs?.Name)!, noOfStall: 2, indexfrom: Index-1, indexTo: Index))
+//
+//                        }
+//                        if (rt?.ID)! == Int((PreviousInstruction?.Rt)!) {
+//
+//                            DataDependceArray.append(DataDependnse(From:(PreviousInstruction?.Rt)!, to: (rt?.Name)!, noOfStall: 2, indexfrom: Index-1, indexTo: Index))
+//
+//                        }
+//
+//                        PipeliningClockCycle = PipeliningClockCycle + 2
+//
+//                        typeArray[Index].setStallsPipelining(stalls: 2)
+//
+//                        if PreviousInstruction?.Intruction != "addi" {
+//
+//                            ForwardingClockCycle = ForwardingClockCycle + 1
+//
+//                            typeArray[Index].setStallsForwarding(stalls: 1)
+//                        }
+//                }
+//                }
             
             
         }
@@ -379,14 +409,14 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
                 
                 if PreviousToThePrevious?.InstType == "R"{
                     if (rd?.ID)! == Int((PreviousToThePrevious?.Rt)!) || (rd?.ID)! == Int((PreviousToThePrevious?.Rs)!) {
-                        if (rd?.ID)! == Int((PreviousToThePrevious?.Rt)!) {
-                            
-                            DataDependceArray.append(DataDependnse(From:(PreviousToThePrevious?.Rt)!, to: (rs?.Name)!, noOfStall: 2, indexfrom: Index-1, indexTo: Index))
+                        if (rd?.ID) == Int((PreviousToThePrevious?.Rt)!) {
+                            DataDependceArray.append(DataDependnse(From:(PreviousToThePrevious?.Rd)!, to: (rt?.Name)!, noOfStall: 1, indexfrom: Index-1, indexTo: Index))
                             
                         }
                         if (rd?.ID)! == Int((PreviousToThePrevious?.Rs)!) {
                             
                             DataDependceArray.append(DataDependnse(From:(PreviousToThePrevious?.Rt)!, to: (rs?.Name)!, noOfStall: 2, indexfrom: Index-1, indexTo: Index))
+                            
                             
                         }
                         if InstructionTypeFromFetch == "R" && PreviousInstruction?.InstType == "R"{
@@ -394,8 +424,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
                                 if (Int((PreviousInstruction?.Rt)!) != Int((PreviousToThePrevious?.Rd)!))  {
                                     if (rs?.ID)! != Int((PreviousInstruction?.Rd)!) && (rt?.ID)! != Int((PreviousInstruction?.Rd)!) {
                                         
-                                        PipeliningClockCycle = PipeliningClockCycle + 1
-                                        typeArray[Index].setStallsPipelining(stalls: 1)
+                                        
                                         
                                     }
                                 }
@@ -407,39 +436,117 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
                     }
                 }
                 
+                if PreviousToThePrevious?.InstType == "I"  {
+                    if PreviousToThePrevious?.InstType != "sw" {
+                        if (rs?.ID)! == Int((PreviousToThePrevious?.Rt)!){
+                            DataDependceArray.append(DataDependnse(From:(PreviousToThePrevious?.Rt)!, to: (rs?.Name)!, noOfStall: 1, indexfrom: Index-1, indexTo: Index))
+                        }
+                    }
+                   
+                }
+                
                 if PreviousToThePrevious?.InstType == "I" && PreviousToThePrevious?.Intruction == "lw"{
-                    if (rs?.ID) == Int((PreviousToThePrevious?.Rt)!) {
+                    if (rs?.ID)! == Int((PreviousToThePrevious?.Rt)!) {
                         DataDependceArray.append(DataDependnse(From:(PreviousToThePrevious?.Rt)!, to: (rs?.Name)!, noOfStall: 1, indexfrom: Index-1, indexTo: Index))
+                        
                     }
                     
                     
                 }
                 if PreviousToThePrevious?.InstType == "I" && PreviousToThePrevious?.Intruction != "lw"{
-                    if (rd?.ID) == Int((PreviousToThePrevious?.Rt)!) {
+                    if (rd?.ID)! == Int((PreviousToThePrevious?.Rt)!) {
                         DataDependceArray.append(DataDependnse(From:(PreviousToThePrevious?.Rd)!, to: (rt?.Name)!, noOfStall: 1, indexfrom: Index-1, indexTo: Index))
+                        
                     }
                 }
                 
-                if InstructionTypeFromFetch == "I" && PreviousToThePrevious?.InstType == "R" {
-                    if InstructionFromFetch == "sw"{
-                        if (rt?.ID)! == Int((PreviousToThePrevious?.Rd)!){
-                            DataDependceArray.append(DataDependnse(From:(PreviousToThePrevious?.Rt)!, to: (rt?.Name)!, noOfStall: 1, indexfrom: Index-1, indexTo: Index))
-                        }
+                if PreviousToThePrevious?.InstType == "I" && PreviousToThePrevious?.InstType == "sw" {
+                    
+                    
                         
-                    }
-                    if InstructionFromFetch != "sw" {
-                        if (rs?.ID) == Int((PreviousToThePrevious?.Rd)!){
-                            DataDependceArray.append(DataDependnse(From:(PreviousToThePrevious?.Rd)!, to: (rd?.Name)!, noOfStall: 1, indexfrom: Index-1, indexTo: Index))
-                            
-                        }
-                        
-                    }
+                    
+//                    if InstructionFromFetch != "sw" {
+//                        if (rs?.ID)! == Int((PreviousToThePrevious?.Rd)!){
+//                            DataDependceArray.append(DataDependnse(From:(PreviousToThePrevious?.Rd)!, to: (rd?.Name)!, noOfStall: 1, indexfrom: Index-1, indexTo: Index))
+//
+//                        }
+//
+//                    }
                     
                     
                     
                     
                     
                 }
+                
+            }
+            
+            
+            if InstructionTypeFromFetch == "I"  {
+                if InstructionFromFetch != "sw"{
+                    if PreviousToThePrevious?.InstType == "R"{
+                        if (rs?.ID)! == Int((PreviousToThePrevious?.Rd)!){
+                            DataDependceArray.append(DataDependnse(From:(PreviousToThePrevious?.Rd)!, to: (rs?.Name)!, noOfStall: 1, indexfrom: Index-1, indexTo: Index))
+                            
+                            
+                        }
+                    }
+                }
+                
+                
+                if PreviousToThePrevious?.InstType == "I"{
+                    if (rs?.ID)! == Int((PreviousToThePrevious?.Rt)!){
+                        
+                        DataDependceArray.append(DataDependnse(From:(PreviousToThePrevious?.Rt)!, to: (rs?.Name)!, noOfStall: 1, indexfrom: Index-1, indexTo: Index))
+                        
+                        
+                    }
+                }
+                if InstructionTypeFromFetch == "I" && InstructionFromFetch == "sw" {
+                    if PreviousToThePrevious?.InstType == "I" {
+                        if (rt?.ID)! == Int((PreviousToThePrevious?.Rt)!) || (rs?.ID)! == Int((PreviousToThePrevious?.Rt)!) {
+                            if (rs?.ID)! == Int((PreviousToThePrevious?.Rt)!) {
+                                
+                                DataDependceArray.append(DataDependnse(From:(PreviousToThePrevious?.Rt)!, to: (rs?.Name)!, noOfStall: 1, indexfrom: Index-1, indexTo: Index))
+                                
+                            }
+                            if (rt?.ID)! == Int((PreviousToThePrevious?.Rt)!) {
+                                
+                                DataDependceArray.append(DataDependnse(From:(PreviousToThePrevious?.Rt)!, to: (rt?.Name)!, noOfStall: 1, indexfrom: Index-1, indexTo: Index))
+                                
+                            }
+                            
+                            
+                            //                        if (rt?.ID)! == Int((PreviousToThePrevious?.Rt)!)   {
+                            //                            if (rt?.ID)! == Int((PreviousToThePrevious?.Rs)!){
+                            //                            //insted of 1 dependece make it 2 dependence
+                            //                            DataDependceArray.append(DataDependnse(From:(PreviousToThePrevious?.Rt)!, to: (rt?.Name)!, noOfStall: 2, indexfrom: Index-1, indexTo: Index))
+                            //                                print("ayman 7mar")
+                            //
+                            //                            }
+                            //                        }
+                            
+                        }
+                    }
+                    if PreviousToThePrevious?.InstType == "R"{
+                        if (rt?.ID)! == Int((PreviousToThePrevious?.Rd)!) || (rs?.ID)! == Int((PreviousToThePrevious?.Rd)!) {
+                            if (rt?.ID)! == Int((PreviousToThePrevious?.Rd)!) {
+                                
+                                DataDependceArray.append(DataDependnse(From:(PreviousToThePrevious?.Rd)!, to: (rt?.Name)!, noOfStall: 1, indexfrom: Index-1, indexTo: Index))
+                                
+                            }
+                            if (rs?.ID)! == Int((PreviousToThePrevious?.Rd)!) {
+                                
+                                DataDependceArray.append(DataDependnse(From:(PreviousToThePrevious?.Rd)!, to: (rs?.Name)!, noOfStall: 1, indexfrom: Index-1, indexTo: Index))
+                                
+                            }
+                        }
+                    }
+                }
+                
+            }
+            
+            if ClockCyclesPlus2 == false{
                 PipeliningClockCycle = PipeliningClockCycle + 1
                 typeArray[Index].setStallsPipelining(stalls: 1)
             }
@@ -447,36 +554,6 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             
             
             
-            
-            
-            
-            if InstructionTypeFromFetch == "I" && InstructionFromFetch == "sw" {
-                if PreviousToThePrevious?.InstType == "I" {
-                    if (rt?.ID)! == Int((PreviousToThePrevious?.Rt)!) || (rs?.ID)! == Int((PreviousToThePrevious?.Rt)!) {
-                        if (rs?.ID)! == Int((PreviousToThePrevious?.Rt)!) {
-                            
-                            DataDependceArray.append(DataDependnse(From:(PreviousToThePrevious?.Rt)!, to: (rs?.Name)!, noOfStall: 2, indexfrom: Index-1, indexTo: Index))
-                            
-                        }
-                        if (rt?.ID)! == Int((PreviousToThePrevious?.Rt)!) {
-                            
-                            DataDependceArray.append(DataDependnse(From:(PreviousToThePrevious?.Rt)!, to: (rt?.Name)!, noOfStall: 2, indexfrom: Index-1, indexTo: Index))
-                            
-                        }
-                        
-//                        if (rt?.ID)! == Int((PreviousToThePrevious?.Rt)!)   {
-//                            if (rt?.ID)! == Int((PreviousToThePrevious?.Rs)!){
-//                            //insted of 1 dependece make it 2 dependence
-//                            DataDependceArray.append(DataDependnse(From:(PreviousToThePrevious?.Rt)!, to: (rt?.Name)!, noOfStall: 2, indexfrom: Index-1, indexTo: Index))
-//                                print("ayman 7mar")
-//
-//                            }
-//                        }
-                        PipeliningClockCycle = PipeliningClockCycle + 1
-                        typeArray[Index].setStallsPipelining(stalls: 1)
-                    }
-                }
-            }
             
         }
         
@@ -648,6 +725,9 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         }
     }
     
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 128.0
+    }
     
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -690,6 +770,9 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        //self.TableView.rowHeight = 44.0
+        
         
         TableView.delegate = self
         TableView.reloadData()
