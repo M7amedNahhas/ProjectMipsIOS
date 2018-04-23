@@ -296,11 +296,56 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             offset = offsetFromTextField
             
         }
-        DetectDataDependece(Index: Index)
+        DetectDataDependece(Index: Index, offsetFromDecode: offsetFromTextField)
         ClockCycle = ClockCycle + 1
         
     }
-    func DetectDataDependece(Index:Int){
+    func DetectDataDependece(Index:Int,offsetFromDecode:Int){
+        //we turn the flags on temporarly
+        if InstructionFromFetch == "beq"{
+            if rs?.Value == rt?.Value {
+                BranchFlagIsON = true
+            } else {
+                BranchFlagIsON = false
+            }
+            
+            
+        }
+        if InstructionFromFetch == "bne"{
+            if rs?.Value != rt?.Value {
+                BranchFlagIsON = true
+            } else {
+                BranchFlagIsON = false
+            }
+        }
+        if InstructionFromFetch == "bgt"{
+            if rs!.Value > rt!.Value {
+                BranchFlagIsON = true
+            }else {
+                BranchFlagIsON = false
+            }
+        }
+        if InstructionFromFetch == "blt"{
+            if rs!.Value < rt!.Value {
+                BranchFlagIsON = true
+            }else {
+                BranchFlagIsON = false
+            }
+        }
+        if InstructionFromFetch == "bge"{
+            if rs!.Value >= rt!.Value {
+                BranchFlagIsON = true
+            }else {
+                BranchFlagIsON = false
+            }
+        }
+        if InstructionFromFetch == "ble"{
+            if rs!.Value <= rt!.Value {
+                BranchFlagIsON = true
+            }else {
+                BranchFlagIsON = false
+            }
+        }
         // PipeLining
         if PreviousInstruction != nil {
             if InstructionTypeFromFetch == "R" && PreviousInstruction?.InstType == "I" {
@@ -317,7 +362,6 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
                     PipeliningClockCycle = PipeliningClockCycle + 2
                     typeArray[Index].setStallsPipelining(stalls: 2)
                     ClockCyclesPlus2 = true
-                    
                     if PreviousInstruction?.Intruction != "addi" {
                         ForwardingClockCycle = ForwardingClockCycle + 1
                         typeArray[Index].setStallsForwarding(stalls: 1)
@@ -349,6 +393,22 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             }
             
             if InstructionTypeFromFetch == "I"{
+                if BranchFlagIsON == true {
+                    
+                    if (rt?.ID) == Int((PreviousInstruction?.Rt)!){
+                        DataDependceArray.append(DataDependnse(From:(PreviousInstruction?.Rt)!, to: (rt?.Name)!, noOfStall: 2, indexfrom: Index-1, indexTo: Index))
+                        
+                        
+                    }
+                    if (rs?.ID) == Int((PreviousInstruction?.Rt)!){
+                        DataDependceArray.append(DataDependnse(From:(PreviousInstruction?.Rt)!, to: (rs?.Name)!, noOfStall: 2, indexfrom: Index-1, indexTo: Index))
+                        
+                       
+                    }
+                    PipeliningClockCycle = PipeliningClockCycle + 2
+                    typeArray[Index].setStallsPipelining(stalls: 2)
+                    ClockCyclesPlus2 = true
+                }
                 if PreviousInstruction?.InstType != "lw" && PreviousInstruction?.InstType != "sw"{
                     if (rs?.ID) == Int((PreviousInstruction?.Rt)!){
                         DataDependceArray.append(DataDependnse(From:(PreviousInstruction?.Rt)!, to: (rs?.Name)!, noOfStall: 2, indexfrom: Index-1, indexTo: Index))
@@ -434,14 +494,16 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
                         }
                      
                     }
+                    
+                    
                 }
                 
-                if PreviousToThePrevious?.InstType == "I"  {
-                    if PreviousToThePrevious?.InstType != "sw" {
+                if PreviousToThePrevious?.InstType == "I" && PreviousToThePrevious?.InstType != "sw"  {
+                    
                         if (rs?.ID)! == Int((PreviousToThePrevious?.Rt)!){
                             DataDependceArray.append(DataDependnse(From:(PreviousToThePrevious?.Rt)!, to: (rs?.Name)!, noOfStall: 1, indexfrom: Index-1, indexTo: Index))
                         }
-                    }
+                    
                    
                 }
                 
@@ -493,15 +555,19 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
                     }
                 }
                 
-                
-                if PreviousToThePrevious?.InstType == "I"{
-                    if (rs?.ID)! == Int((PreviousToThePrevious?.Rt)!){
-                        
-                        DataDependceArray.append(DataDependnse(From:(PreviousToThePrevious?.Rt)!, to: (rs?.Name)!, noOfStall: 1, indexfrom: Index-1, indexTo: Index))
-                        
-                        
+                if BranchFlagIsON == false{
+                    if PreviousToThePrevious?.InstType == "I"{
+                        if (rs?.ID)! == Int((PreviousToThePrevious?.Rt)!){
+                            
+                            DataDependceArray.append(DataDependnse(From:(PreviousToThePrevious?.Rt)!, to: (rs?.Name)!, noOfStall: 1, indexfrom: Index-1, indexTo: Index))
+                            
+                            
+                        }
                     }
+                    
                 }
+                
+            
                 if InstructionTypeFromFetch == "I" && InstructionFromFetch == "sw" {
                     if PreviousToThePrevious?.InstType == "I" {
                         if (rt?.ID)! == Int((PreviousToThePrevious?.Rt)!) || (rs?.ID)! == Int((PreviousToThePrevious?.Rt)!) {
@@ -543,7 +609,20 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
                         }
                     }
                 }
-                
+                if BranchFlagIsON == true {
+                    
+                    if (rt?.ID) == Int((PreviousToThePrevious?.Rt)!){
+                        DataDependceArray.append(DataDependnse(From:(PreviousToThePrevious?.Rt)!, to: (rt?.Name)!, noOfStall: 1, indexfrom: Index-1, indexTo: Index))
+                        
+                        
+                    }
+                    if (rs?.ID) == Int((PreviousToThePrevious?.Rt)!){
+                        DataDependceArray.append(DataDependnse(From:(PreviousToThePrevious?.Rt)!, to: (rs?.Name)!, noOfStall: 1, indexfrom: Index-1, indexTo: Index))
+                        
+                        
+                    }
+                    
+                }
             }
             
             if ClockCyclesPlus2 == false{
@@ -575,10 +654,24 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             if (rs?.ID)! == Int((PreviousToThePrevious?.Rd)!) || (rt?.ID)! == Int((PreviousToThePrevious?.Rd)!) {
                 PipeliningClockCycle = PipeliningClockCycle + 1
             }*/
+        
+        
         }
         
         // Forwarding
         
+        //here we check if the branch goes to previous index
+        
+        if BranchFlagIsON == true {
+            
+                if offsetFromDecode < Index {
+                    PipeliningClockCycle = PipeliningClockCycle + 3
+                    typeArray[Index].setStallsPipelining(stalls: 3)
+                }
+            
+            
+            
+        }
         
     }
     func Execution(){
@@ -843,7 +936,14 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         if typeArray.isEmpty == false {
             var j:Int = 0
             var indexOfArrayForLabel:Int = 0
+            var loopCunter: Int = 0
             while j < typeArray.count {
+                loopCunter = loopCunter + 1
+                if loopCunter > 1000{
+                    createAlertWithOnlyOkAction(title: "Infinite loop", measge: "Yo!")
+                    break
+                    
+                }
                 Fetch(InstructionFromTextField: typeArray[j].Intruction)
                 Decode(rsFromTextField: typeArray[j].Rs, rdFromTextField: typeArray[j].Rd, rtFromTextField: typeArray[j].Rt, offsetFromTextField: Int(typeArray[j].Offset) ?? 0, Index: j)
                 Execution()

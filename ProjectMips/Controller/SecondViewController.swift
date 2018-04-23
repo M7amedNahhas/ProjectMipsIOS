@@ -35,6 +35,10 @@ class SecondViewController: UIViewController ,UITableViewDelegate,UITableViewDat
 
         // Do any additional setup after loading the view.
     }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 148.0
+    }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
