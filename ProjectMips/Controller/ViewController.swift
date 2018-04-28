@@ -134,6 +134,9 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
                 iTypeMode = false
             }
             CheckITypeMode()
+            self.rdRtypeNew.text = nil
+            self.rsRtypeNew.text = nil
+            self.rtRtypeNew.text = nil 
         }
         
         if pickerView.tag == 100 {
@@ -147,6 +150,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         if pickerView.tag == 10000 {
             rdRtypeNew.text = RegisterFile[row].Name
         }
+
     }
     
     // Add New Method
