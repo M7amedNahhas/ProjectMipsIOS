@@ -59,7 +59,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     var DataDependceArray = [DataDependnse]()
     
     var InstructionMemory = ["add":"add","sub":"sub"
-        ,"and":"and","or":"or","slt":"slt","nor":"nor","sw":"sw","lw":"lw","srl":"srl","addi":"addi","beq":"beq","bne":"bne","bgt":"bgt","blt":"blt" , "ble":"ble" , "bge":"bge","":"",]
+        ,"and":"and","or":"or","slt":"slt","nor":"nor","sw":"sw","lw":"lw","srl":"srl","addi":"addi","beq":"beq","bne":"bne","bgt":"bgt","blt":"blt" , "ble":"ble" , "bge":"bge","li":"li",]
     
     var BranchFlagIsON:Bool = false
     var ClockCyclesPlus2 : Bool = false
@@ -69,7 +69,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     
     var instructionsPickerView = UIPickerView()
     
-    var instructionPickerData = ["choose..","add","sub","and","or","slt","nor","sw","lw","srl","addi","beq","bne","bgt","blt", "ble", "bge"]
+    var instructionPickerData = ["choose..","add","sub","and","or","slt","nor","sw","lw","srl","addi","beq","bne","bgt","blt", "ble", "bge", "li"]
     
     var iTypeMode:Bool?
     
@@ -128,7 +128,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         
         if pickerView.tag == 10 {
             instRtypeNew.text = instructionPickerData[row]
-            if instructionPickerData[row] == "sw" || instructionPickerData[row] == "lw" || instructionPickerData[row] == "addi" || instructionPickerData[row] == "beq" || instructionPickerData[row] == "bgt" || instructionPickerData[row] == "blt" || instructionPickerData[row] == "ble" || instructionPickerData[row] == "bge" || instructionPickerData[row] == "bne" {
+            if instructionPickerData[row] == "sw" || instructionPickerData[row] == "lw" || instructionPickerData[row] == "addi" || instructionPickerData[row] == "beq" || instructionPickerData[row] == "bgt" || instructionPickerData[row] == "blt" || instructionPickerData[row] == "ble" || instructionPickerData[row] == "bge" || instructionPickerData[row] == "bne" || instructionPickerData[row] == "li" {
                 iTypeMode = true
             } else {
                 iTypeMode = false
@@ -267,7 +267,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         
         
         InstructionFromFetch = InstructionMemory[InstructionFromTextField]
-        if InstructionFromFetch == "sw" || InstructionFromFetch == "lw" || InstructionFromFetch == "addi" || InstructionFromFetch == "beq" || InstructionFromFetch == "bne" || InstructionFromFetch == "bgt" || InstructionFromFetch == "ble" || InstructionFromFetch == "bge" {
+        if InstructionFromFetch == "sw" || InstructionFromFetch == "lw" || InstructionFromFetch == "addi" || InstructionFromFetch == "beq" || InstructionFromFetch == "bne" || InstructionFromFetch == "bgt" || InstructionFromFetch == "ble" || InstructionFromFetch == "bge" || InstructionFromFetch == "li"{
             InstructionTypeFromFetch = "I"
         } else {
             InstructionTypeFromFetch = "R"
@@ -739,6 +739,9 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             }else {
                 BranchFlagIsON = false
             }
+        }
+        if InstructionFromFetch == "li"{
+            rt?.setValue(newValue: (offset)! + (rs?.Value)!)
         }
        
         
