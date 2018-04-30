@@ -14,6 +14,9 @@
 		1C8666851FE9A14900B52A72 /* Register.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C8666841FE9A14900B52A72 /* Register.swift */; };
 		1C88E626208BBEC4008BB976 /* CustomLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C88E625208BBEC4008BB976 /* CustomLabel.swift */; };
 		1C88E628208BC2D6008BB976 /* CustomView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C88E627208BC2D6008BB976 /* CustomView.swift */; };
+		1C95713920966EBA00F8EF4E /* PageTutorials.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C95713820966EBA00F8EF4E /* PageTutorials.swift */; };
+		1C95713B2096774400F8EF4E /* CircleClosing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C95713A2096774400F8EF4E /* CircleClosing.swift */; };
+		1C95713D20968CE100F8EF4E /* FourthTourtralVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C95713C20968CE100F8EF4E /* FourthTourtralVC.swift */; };
 		6288C4271FBEF8EF00F5A85B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6288C4261FBEF8EF00F5A85B /* AppDelegate.swift */; };
 		6288C4291FBEF8EF00F5A85B /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6288C4281FBEF8EF00F5A85B /* ViewController.swift */; };
 		6288C42C1FBEF8EF00F5A85B /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6288C42A1FBEF8EF00F5A85B /* Main.storyboard */; };
@@ -32,6 +35,9 @@
 		1C8666841FE9A14900B52A72 /* Register.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Register.swift; sourceTree = "<group>"; };
 		1C88E625208BBEC4008BB976 /* CustomLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomLabel.swift; sourceTree = "<group>"; };
 		1C88E627208BC2D6008BB976 /* CustomView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomView.swift; sourceTree = "<group>"; };
+		1C95713820966EBA00F8EF4E /* PageTutorials.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PageTutorials.swift; sourceTree = "<group>"; };
+		1C95713A2096774400F8EF4E /* CircleClosing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircleClosing.swift; sourceTree = "<group>"; };
+		1C95713C20968CE100F8EF4E /* FourthTourtralVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FourthTourtralVC.swift; sourceTree = "<group>"; };
 		6288C4231FBEF8EF00F5A85B /* ProjectMips.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ProjectMips.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6288C4261FBEF8EF00F5A85B /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		6288C4281FBEF8EF00F5A85B /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -62,6 +68,7 @@
 				6288C42F1FBEF8EF00F5A85B /* LaunchScreen.storyboard */,
 				1C88E625208BBEC4008BB976 /* CustomLabel.swift */,
 				1C88E627208BC2D6008BB976 /* CustomView.swift */,
+				1C95713A2096774400F8EF4E /* CircleClosing.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -71,6 +78,8 @@
 			children = (
 				6288C4281FBEF8EF00F5A85B /* ViewController.swift */,
 				1C6BCC211FF17FF5009C460D /* SecondViewController.swift */,
+				1C95713820966EBA00F8EF4E /* PageTutorials.swift */,
+				1C95713C20968CE100F8EF4E /* FourthTourtralVC.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -190,7 +199,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1C95713D20968CE100F8EF4E /* FourthTourtralVC.swift in Sources */,
 				1C6BCC221FF17FF5009C460D /* SecondViewController.swift in Sources */,
+				1C95713B2096774400F8EF4E /* CircleClosing.swift in Sources */,
 				1C8666851FE9A14900B52A72 /* Register.swift in Sources */,
 				1C88E626208BBEC4008BB976 /* CustomLabel.swift in Sources */,
 				62BDE7A21FE5110B0007AA70 /* Instruction.swift in Sources */,
@@ -198,6 +209,7 @@
 				6288C4291FBEF8EF00F5A85B /* ViewController.swift in Sources */,
 				1C6BCC241FF18138009C460D /* DataDependTableViewCell.swift in Sources */,
 				6288C4271FBEF8EF00F5A85B /* AppDelegate.swift in Sources */,
+				1C95713920966EBA00F8EF4E /* PageTutorials.swift in Sources */,
 				62FD23B41FE3EE5600CEB743 /* R-TypeTableViewCell.swift in Sources */,
 				1C88E628208BC2D6008BB976 /* CustomView.swift in Sources */,
 				1C497694201D13750092C503 /* Texts.swift in Sources */,

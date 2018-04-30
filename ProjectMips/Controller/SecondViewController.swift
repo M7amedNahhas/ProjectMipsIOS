@@ -30,15 +30,12 @@ class SecondViewController: UIViewController ,UITableViewDelegate,UITableViewDat
         tableView.delegate = self
         tableView.reloadData()
         setLabelText()
-        
-        
-
         // Do any additional setup after loading the view.
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 148.0
-    }
+                return 148.0
+   }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()

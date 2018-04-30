@@ -11,6 +11,7 @@ import UIKit
 class DataDependTableViewCell: UITableViewCell {
 
     @IBOutlet weak var indexfromCell: CustomLabel!
+    
     @IBOutlet weak var indextoCell: CustomLabel!
     
     @IBOutlet weak var regfromCell: CustomLabel!

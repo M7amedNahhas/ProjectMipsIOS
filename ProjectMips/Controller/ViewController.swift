@@ -10,7 +10,7 @@ import UIKit
 
 class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource, UIPickerViewDelegate , UIPickerViewDataSource {
     
-    
+    @IBOutlet weak var loadingImage: UIImageView!
     
     // R-Type
     
@@ -868,10 +868,18 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     
     //picker methods
     
+    override func viewDidAppear(_ animated: Bool) {
+        loadingImage.isHidden = true
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         //self.TableView.rowHeight = 44.0
+        
+        //LoadingWheel.isHidden = true
+        
+        loadingImage.isHidden = true
         
         
         TableView.delegate = self
@@ -940,14 +948,17 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     }
     
     @IBAction func ExcuteButtonDo(_ sender: UIButton) {
+        
         if typeArray.isEmpty == false {
+            self.loadingImage.isHidden = false
             var j:Int = 0
             var indexOfArrayForLabel:Int = 0
             var loopCunter: Int = 0
             while j < typeArray.count {
                 loopCunter = loopCunter + 1
                 if loopCunter > 1000{
-                    createAlertWithOnlyOkAction(title: "Infinite loop", measge: "Yo!")
+                    createAlertWithOnlyOkAction(title: "Infinite loop", measge: "Your insturction set is passed the 1000 instruction counter loop")
+                    self.loadingImage.isHidden = true
                     break
                     
                 }
@@ -972,7 +983,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             performSegue(withIdentifier: "ShowSecond", sender: nil)
             clearAll()
         } else {
-            createAlertWithOnlyOkAction(title: " ", measge: Texts.NO_INSTRUCTIONS_ADDED)
+            createAlertWithOnlyOkAction(title: "Add Instrucions!", measge: Texts.NO_INSTRUCTIONS_ADDED)
         }
 
     }
@@ -1024,6 +1035,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         clearAll()
         TableView.reloadData()
         
+        
     }
     
     func CheckITypeMode(){
@@ -1049,6 +1061,14 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             alert.dismiss(animated: true, completion: nil)
         }))
         self.present(alert, animated: true, completion: nil)
+    }
+    
+    func bluerView(){
+        let blurEffect = UIBlurEffect(style: UIBlurEffectStyle.dark)
+        let blurEffectView = UIVisualEffectView(effect: blurEffect)
+        blurEffectView.frame = view.bounds
+        blurEffectView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        view.addSubview(blurEffectView)
     }
     
 }
