@@ -981,6 +981,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             FullForwarding()
             print("loop count \(indexOfArrayForLabel)")
             performSegue(withIdentifier: "ShowSecond", sender: nil)
+            self.loadingImage.isHidden = true
             clearAll()
         } else {
             createAlertWithOnlyOkAction(title: "Add Instrucions!", measge: Texts.NO_INSTRUCTIONS_ADDED)

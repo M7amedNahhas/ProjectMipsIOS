@@ -245,7 +245,7 @@
                                                                     <rect key="frame" x="10" y="23" width="334" height="30"/>
                                                                     <subviews>
                                                                         <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="inst" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="PmI-7U-dvw">
-                                                                            <rect key="frame" x="0.0" y="0.0" width="72.333333333333329" height="30"/>
+                                                                            <rect key="frame" x="0.0" y="0.0" width="72" height="30"/>
                                                                             <constraints>
                                                                                 <constraint firstAttribute="height" constant="30" id="QUN-Kq-ycj"/>
                                                                             </constraints>
@@ -254,7 +254,7 @@
                                                                             <textInputTraits key="textInputTraits"/>
                                                                         </textField>
                                                                         <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="rt" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="eqF-RJ-4Y3">
-                                                                            <rect key="frame" x="87.333333333333343" y="0.0" width="72.333333333333343" height="30"/>
+                                                                            <rect key="frame" x="87" y="0.0" width="72.666666666666686" height="30"/>
                                                                             <constraints>
                                                                                 <constraint firstAttribute="height" constant="30" id="1a8-pR-sEq"/>
                                                                             </constraints>
@@ -263,7 +263,7 @@
                                                                             <textInputTraits key="textInputTraits"/>
                                                                         </textField>
                                                                         <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="rs" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="FEq-lX-Vs5">
-                                                                            <rect key="frame" x="174.66666666666666" y="0.0" width="72" height="30"/>
+                                                                            <rect key="frame" x="174.66666666666666" y="0.0" width="72.333333333333343" height="30"/>
                                                                             <constraints>
                                                                                 <constraint firstAttribute="height" constant="30" id="dUk-nz-tOc"/>
                                                                             </constraints>
@@ -272,7 +272,7 @@
                                                                             <textInputTraits key="textInputTraits"/>
                                                                         </textField>
                                                                         <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="offset" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="7aV-3i-HYt">
-                                                                            <rect key="frame" x="261.66666666666669" y="0.0" width="72.333333333333314" height="30"/>
+                                                                            <rect key="frame" x="262" y="0.0" width="72" height="30"/>
                                                                             <constraints>
                                                                                 <constraint firstAttribute="height" constant="30" id="toz-av-fuY"/>
                                                                             </constraints>
@@ -491,7 +491,7 @@
                                     <action selector="BackButtonDo:" destination="HMn-HG-zse" eventType="touchUpInside" id="cUA-Y0-o8m"/>
                                 </connections>
                             </button>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="img_110326" translatesAutoresizingMaskIntoConstraints="NO" id="itk-z1-abu">
+                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="img_110326" translatesAutoresizingMaskIntoConstraints="NO" id="itk-z1-abu">
                                 <rect key="frame" x="169.66666666666666" y="30" width="75" height="75"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="75" id="I3k-tS-6r8"/>
